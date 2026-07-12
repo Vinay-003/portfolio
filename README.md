@@ -1,21 +1,21 @@
 # Vinay Saini Portfolio — Next.js Scrollytelling Build
 
-A production-ready Next.js portfolio rebuilt from the approved static design and upgraded into a pinned, scroll-driven experience.
+A production-ready Next.js portfolio with pinned, scroll-driven scenes and a responsive mobile fallback.
 
 ## Motion system
 
-- **GSAP + ScrollTrigger** for pinned scenes, scrubbed timelines, snap points, curtain wipes and horizontal tool movement.
-- **Lenis** for smooth, controlled scrolling integrated with GSAP's ticker.
-- **@gsap/react** for scoped animation setup and cleanup inside React.
-- Desktop uses cinematic pinned scrollytelling: the viewport remains in place while the content changes.
-- Tablet/mobile automatically fall back to a clean stacked layout with lightweight reveal animations.
-- `prefers-reduced-motion` disables the cinematic system and preserves full usability.
+- **GSAP + ScrollTrigger** for pinned scenes, scrubbed timelines, project snapping and horizontal tool movement.
+- **Lenis** for smooth controlled scrolling integrated with the GSAP ticker.
+- **@gsap/react** for scoped animation setup and cleanup.
+- Desktop keeps the viewport pinned while content changes inside each scene.
+- Tablet and mobile switch to a clean stacked layout with lightweight reveals.
+- `prefers-reduced-motion` disables cinematic motion while preserving content and navigation.
 
 ## Main scenes
 
-1. Hero opens into a full-screen lime transition.
-2. Selected work stays pinned while Ad Factory, Skillarious and JobHunter_ replace one another with curtain wipes.
-3. Shopify internship reveals the production website through an opening browser curtain.
+1. A wider hero exits quickly, followed by a slower reveal into the selected-work section.
+2. Ad Factory, Skillarious and JobHunter_ replace one another using direct masked card reveals, with stable snap points and no blank transition screen.
+3. The Shopify internship section presents verified production-work details and the live URL without a fabricated website screenshot.
 4. About stays pinned while the tools track moves horizontally.
 5. Contact expands into view as the final scene.
 
@@ -35,7 +35,7 @@ npm run build
 npm start
 ```
 
-The project has been tested with `npm run build` on Next.js 16.2.10. The dependency lockfile is included and `npm audit` reports zero known vulnerabilities at the time this archive was generated.
+The project was successfully tested with `npm run build` on Next.js 16.2.10.
 
 ## Editing content
 

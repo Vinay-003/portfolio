@@ -221,13 +221,6 @@ export function Portfolio() {
       const root = rootRef.current;
       if (!root) return;
 
-      const intro = gsap.timeline({ defaults: { ease: "power4.inOut" } });
-      intro
-        .to(".intro-mark", { opacity: 0, scale: 0.9, duration: 0.35, delay: 0.25 })
-        .to(".intro-panel--left", { xPercent: -102, duration: 1.1 }, "-=0.05")
-        .to(".intro-panel--right", { xPercent: 102, duration: 1.1 }, "<")
-        .set(".intro", { display: "none" });
-
       const mm = gsap.matchMedia();
       mm.add("(min-width: 900px) and (prefers-reduced-motion: no-preference)", () => {
         const heroStage = root.querySelector<HTMLElement>(".hero-stage");
@@ -237,24 +230,27 @@ export function Portfolio() {
             scrollTrigger: {
               trigger: heroScene,
               start: "top top",
-              end: () => `+=${window.innerHeight * 1.8}`,
+              end: () => `+=${window.innerHeight * 1.35}`,
               pin: heroStage,
-              scrub: 1,
+              scrub: 0.65,
               anticipatePin: 1,
               invalidateOnRefresh: true,
             },
           });
 
           heroTl
-            .to(".hero-copy, .hero-actions, .hero-meta", { opacity: 0, y: -40, stagger: 0.03 }, 0)
-            .to(".hero-title-line:nth-child(1)", { xPercent: -14 }, 0)
-            .to(".hero-title-line:nth-child(2)", { xPercent: 12 }, 0)
-            .to(".hero-title-line:nth-child(3)", { xPercent: -8, scale: 1.1 }, 0)
-            .to(".hero-art-bar", { yPercent: (index) => (index % 2 ? -155 : 155), rotation: 0, stagger: 0.025 }, 0)
-            .to(".hero-orb", { scale: 2.3, opacity: 0.7 }, 0)
-            .fromTo(".hero-transition", { clipPath: "inset(100% 0 0 0)" }, { clipPath: "inset(0% 0 0 0)" }, 0.45)
-            .fromTo(".hero-transition h2", { yPercent: 120 }, { yPercent: 0 }, 0.54)
-            .to(".hero-content", { opacity: 0, scale: 0.96 }, 0.68);
+            .addLabel("heroExit", 0)
+            .to(".hero-copy, .hero-actions, .hero-meta", { opacity: 0, y: -34, stagger: 0.02, duration: 0.24, ease: "power3.in" }, "heroExit")
+            .to(".hero-title-line:nth-child(1)", { xPercent: -10, duration: 0.32, ease: "power3.inOut" }, "heroExit")
+            .to(".hero-title-line:nth-child(2)", { xPercent: 9, duration: 0.32, ease: "power3.inOut" }, "heroExit")
+            .to(".hero-title-line:nth-child(3)", { xPercent: -6, scale: 1.06, duration: 0.32, ease: "power3.inOut" }, "heroExit")
+            .to(".hero-art-bar", { yPercent: (index) => (index % 2 ? -130 : 130), rotation: 0, stagger: 0.018, duration: 0.3, ease: "power3.inOut" }, "heroExit")
+            .to(".hero-orb", { scale: 1.9, opacity: 0.55, duration: 0.32 }, "heroExit")
+            .to(".hero-content", { opacity: 0, scale: 0.975, duration: 0.2 }, 0.2)
+            .addLabel("sectionReveal", 0.28)
+            .fromTo(".hero-transition", { clipPath: "inset(100% 0 0 0)" }, { clipPath: "inset(0% 0 0 0)", duration: 0.72, ease: "power2.inOut" }, "sectionReveal")
+            .fromTo(".hero-transition h2", { yPercent: 115, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.62, ease: "power3.out" }, "sectionReveal+=0.12")
+            .fromTo(".hero-transition p", { opacity: 0 }, { opacity: 1, duration: 0.35 }, "sectionReveal+=0.22");
         }
 
         const workStage = root.querySelector<HTMLElement>(".work-stage");
@@ -262,39 +258,54 @@ export function Portfolio() {
         const cards = gsap.utils.toArray<HTMLElement>(".project-panel");
         const counterItems = gsap.utils.toArray<HTMLElement>(".project-counter__item");
         if (workStage && workScene && cards.length) {
-          gsap.set(cards.slice(1), { yPercent: 115, clipPath: "inset(100% 0 0 0)", scale: 1.04 });
+          gsap.set(cards.slice(1), { yPercent: 8, clipPath: "inset(100% 0 0 0 round 34px)", scale: 0.985 });
           gsap.set(counterItems.slice(1), { opacity: 0.18 });
 
           const workTl = gsap.timeline({
             scrollTrigger: {
               trigger: workScene,
               start: "top top",
-              end: () => `+=${window.innerHeight * 3.3}`,
+              end: () => `+=${window.innerHeight * 4.6}`,
               pin: workStage,
-              scrub: 1,
-              snap: { snapTo: 1 / (cards.length - 1), duration: { min: 0.2, max: 0.65 }, ease: "power2.inOut" },
+              scrub: 0.45,
+              snap: {
+                snapTo: "labelsDirectional",
+                delay: 0.05,
+                duration: { min: 0.12, max: 0.28 },
+                ease: "power2.inOut",
+                inertia: false,
+              },
               anticipatePin: 1,
               invalidateOnRefresh: true,
             },
           });
 
+          workTl.addLabel("project-0", 0);
           cards.forEach((card, index) => {
             if (index === 0) return;
             const previous = cards[index - 1];
-            const start = index - 1;
+            const transitionStart = 0.72 + (index - 1) * 1.12;
             workTl
-              .to(previous, { yPercent: -18, scale: 0.9, opacity: 0.22, filter: "blur(12px)", duration: 0.55 }, start)
-              .fromTo(
-                ".work-wipe",
-                { scaleY: 0, transformOrigin: "bottom" },
-                { scaleY: 1, duration: 0.25, ease: "power3.in" },
-                start + 0.08,
-              )
-              .to(card, { yPercent: 0, clipPath: "inset(0% 0 0 0)", scale: 1, duration: 0.65, ease: "power3.out" }, start + 0.18)
-              .to(".work-wipe", { scaleY: 0, transformOrigin: "top", duration: 0.28, ease: "power3.out" }, start + 0.48)
-              .to(counterItems[index - 1], { opacity: 0.18, duration: 0.2 }, start + 0.2)
-              .to(counterItems[index], { opacity: 1, duration: 0.2 }, start + 0.2);
+              .to(previous, {
+                yPercent: -7,
+                scale: 0.94,
+                opacity: 0.12,
+                filter: "blur(10px)",
+                duration: 0.26,
+                ease: "power3.in",
+              }, transitionStart)
+              .to(card, {
+                yPercent: 0,
+                clipPath: "inset(0% 0 0 0 round 34px)",
+                scale: 1,
+                duration: 0.34,
+                ease: "power3.out",
+              }, transitionStart + 0.03)
+              .to(counterItems[index - 1], { opacity: 0.18, duration: 0.14 }, transitionStart + 0.08)
+              .to(counterItems[index], { opacity: 1, duration: 0.14 }, transitionStart + 0.08)
+              .addLabel(`project-${index}`, transitionStart + 0.37);
           });
+          workTl.to(cards[cards.length - 1], { scale: 1, duration: 0.7 });
         }
 
         const experienceStage = root.querySelector<HTMLElement>(".experience-stage");
@@ -304,20 +315,18 @@ export function Portfolio() {
             scrollTrigger: {
               trigger: experienceScene,
               start: "top top",
-              end: () => `+=${window.innerHeight * 1.6}`,
+              end: () => `+=${window.innerHeight * 1.9}`,
               pin: experienceStage,
-              scrub: 1,
+              scrub: 0.9,
               anticipatePin: 1,
               invalidateOnRefresh: true,
             },
           })
-            .fromTo(".experience-kicker", { yPercent: 160 }, { yPercent: 0 }, 0)
-            .fromTo(".experience-title-line", { yPercent: 120 }, { yPercent: 0, stagger: 0.08 }, 0.02)
-            .fromTo(".browser-shell", { clipPath: "inset(0 100% 0 0)", rotateY: -12 }, { clipPath: "inset(0 0% 0 0)", rotateY: 0 }, 0.15)
-            .fromTo(".experience-point", { x: 60, opacity: 0 }, { x: 0, opacity: 1, stagger: 0.08 }, 0.35)
-            .to(".experience-curtain--a", { xPercent: -102 }, 0.63)
-            .to(".experience-curtain--b", { xPercent: 102 }, 0.63)
-            .fromTo(".experience-link", { opacity: 0, y: 30 }, { opacity: 1, y: 0 }, 0.72);
+            .fromTo(".experience-title-line", { yPercent: 110 }, { yPercent: 0, stagger: 0.08, duration: 0.42, ease: "power3.out" }, 0.02)
+            .fromTo(".experience-copy > p", { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: 0.3 }, 0.16)
+            .fromTo(".experience-point", { x: 54, opacity: 0 }, { x: 0, opacity: 1, stagger: 0.07, duration: 0.35 }, 0.25)
+            .fromTo(".experience-proof", { opacity: 0, y: 72, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.58, ease: "power3.out" }, 0.18)
+            .fromTo(".experience-link", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.32 }, 0.58);
         }
 
         const aboutStage = root.querySelector<HTMLElement>(".about-stage");
@@ -388,12 +397,6 @@ export function Portfolio() {
     <main ref={rootRef}>
       <a className="skip-link" href="#work">Skip to selected work</a>
       <Cursor />
-
-      <div className="intro" aria-hidden="true">
-        <div className="intro-panel intro-panel--left" />
-        <div className="intro-panel intro-panel--right" />
-        <div className="intro-mark"><span>VINAY</span><i>/</i><span>003</span></div>
-      </div>
 
       <header className="site-header">
         <a className="brand" data-magnetic href="#top">VINAY <span>/ 003</span></a>
@@ -473,7 +476,6 @@ export function Portfolio() {
                 <ProjectVisual type={project.visual} />
               </article>
             ))}
-            <div className="work-wipe" aria-hidden="true" />
           </div>
         </div>
       </section>
@@ -495,16 +497,23 @@ export function Portfolio() {
             <a className="experience-link" data-magnetic href="https://theobesitykiller.com" target="_blank" rel="noreferrer">theobesitykiller.com <span>↗</span></a>
           </div>
 
-          <div className="browser-shell" aria-label="Stylized browser preview of the production Shopify work">
-            <div className="browser-bar"><div><span /><span /><span /></div><p>theobesitykiller.com</p><b>LIVE</b></div>
-            <div className="browser-page">
-              <div className="browser-nav"><strong>AAROGYA KAYA</strong><span>SHOP&nbsp;&nbsp; STORY&nbsp;&nbsp; RESULTS</span></div>
-              <div className="browser-hero"><p>AYURVEDIC WEIGHT MANAGEMENT</p><h3>Build a routine<br />that lasts.</h3><button type="button">EXPLORE THE KIT</button></div>
-              <div className="browser-cards"><span /><span /><span /></div>
+          <aside className="experience-proof" aria-label="Verified production work details">
+            <div className="experience-proof__top">
+              <span>LIVE PRODUCTION WORK</span>
+              <i>ONLINE</i>
             </div>
-            <div className="experience-curtain experience-curtain--a" />
-            <div className="experience-curtain experience-curtain--b" />
-          </div>
+            <div className="experience-proof__url">theobesitykiller.com</div>
+            <p>Shopify storefront development, conversion journeys and production integrations.</p>
+            <div className="experience-proof__grid">
+              <div><strong>SHOPIFY</strong><span>Storefront development</span></div>
+              <div><strong>CHECKOUT</strong><span>Login and purchase flows</span></div>
+              <div><strong>AUTOMATION</strong><span>Messaging and data workflows</span></div>
+              <div><strong>ANALYTICS</strong><span>Tracking and reporting</span></div>
+            </div>
+            <div className="experience-proof__signal" aria-hidden="true">
+              {Array.from({ length: 7 }).map((_, index) => <span key={index} />)}
+            </div>
+          </aside>
         </div>
       </section>
 
