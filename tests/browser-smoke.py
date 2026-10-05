@@ -57,6 +57,8 @@ class PortfolioBrowserTests(unittest.TestCase):
             self.assertEqual(panel.get_attribute("aria-hidden"), "false")
             self.assertEqual(page.locator(".project-panel:not([inert])").count(), 1)
             self.assertEqual(panel.locator(".project-actions").evaluate("el => getComputedStyle(el).opacity"), "1")
+            for previous in page.locator(".project-panel").all()[:len(destinations) - 1]:
+                self.assertEqual(previous.evaluate("el => getComputedStyle(el).opacity"), "0", "Settled chapters must not leave ghost cards behind")
 
         for index in range(3):
             # The latter part of each chapter interval is the animated handoff.
