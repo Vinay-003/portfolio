@@ -96,6 +96,32 @@ class PortfolioBrowserTests(unittest.TestCase):
             self.assertEqual(panel.evaluate("el => getComputedStyle(el).transform"), "none")
             self.assertEqual(panel.locator("h3").evaluate("el => getComputedStyle(el).opacity"), "1")
 
+    def test_chapter_numbers_are_complete_and_clear_of_previews(self):
+        for width, height in [(1440, 900), (900, 700), (768, 1024), (390, 844)]:
+            page = self.open_page(width, height)
+            for index, name in enumerate(["RoyaltyOS", "JobHunter", "Learn Sphere", "CLIFFY"]):
+                if width >= 900:
+                    page.get_by_role("button", name=f"View {name}", exact=True).click()
+                else:
+                    page.locator(".project-panel").nth(index).scroll_into_view_if_needed()
+                page.wait_for_timeout(1900)
+                panel = page.locator(".project-panel").nth(index)
+                number = panel.locator(".project-chapter__number")
+                self.assertEqual(number.inner_text(), f"{index + 1:02d}")
+                self.assertEqual(number.evaluate("el => getComputedStyle(el).opacity"), "1")
+                bounds = number.bounding_box()
+                card = panel.bounding_box()
+                self.assertGreaterEqual(bounds["x"], card["x"])
+                self.assertLessEqual(bounds["x"] + bounds["width"], card["x"] + card["width"])
+                self.assertGreaterEqual(bounds["y"], card["y"])
+                self.assertLessEqual(bounds["y"] + bounds["height"], card["y"] + card["height"])
+                for selector in [".project-preview-wrap", ".project-panel__top", "h3", ".project-panel__kicker", ".project-panel__description", ".tag-list", ".project-actions"]:
+                    other = panel.locator(selector).bounding_box()
+                    overlap_x = min(bounds["x"] + bounds["width"], other["x"] + other["width"]) - max(bounds["x"], other["x"])
+                    overlap_y = min(bounds["y"] + bounds["height"], other["y"] + other["height"]) - max(bounds["y"], other["y"])
+                    self.assertFalse(overlap_x > 1 and overlap_y > 1, f"{width}px {name}: chapter number overlaps {selector}")
+            self.assertLessEqual(page.evaluate("document.documentElement.scrollWidth"), width)
+
     def test_mobile_all_project_previews_are_interactive(self):
         page = self.open_page(390, 844)
         self.assertEqual(page.locator(".project-panel[inert]").count(), 0)
