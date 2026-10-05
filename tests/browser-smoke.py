@@ -127,9 +127,9 @@ class PortfolioBrowserTests(unittest.TestCase):
         panel = page.locator(".project-panel.is-active").bounding_box()
         actions = page.locator(".project-panel.is-active .project-actions").bounding_box()
         self.assertLessEqual(actions["y"] + actions["height"], panel["y"] + panel["height"])
-        page.get_by_role("button", name="Load interactive preview").click()
+        page.locator(".project-panel.is-active").get_by_role("button", name="Load interactive preview").click()
         self.assertEqual(page.locator("iframe").count(), 1)
-        page.get_by_role("button", name="Back to project poster").click()
+        page.locator(".project-panel.is-active").get_by_role("button", name="Back to project poster").click()
         self.assertEqual(page.locator("iframe").count(), 0)
         self.capture(page, "work-900")
 

@@ -5,5 +5,6 @@ out
 .DS_Store
 npm-debug.log*
 *.tsbuildinfo
+__pycache__/
 qa/screens/
 .opencode/omnirush/

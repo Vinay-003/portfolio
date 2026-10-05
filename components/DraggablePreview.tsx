@@ -173,6 +173,20 @@ function LiveWebsite({ title, url, loadLive, onLoad, onClose, active }: { title:
 
 function ProjectPoster({ title }: { title: string }) {
   const royalty = title.toLowerCase().includes("royalty");
+  if (title === "Ad Factory") return <div className="browser-poster production-art production-art--factory" role="img" aria-label="Conceptual Ad Factory creative workflow diagram, not a website screenshot">
+    <div className="production-art__mast"><span>CREATIVE PIPELINE / CONCEPTUAL POSTER</span><span>AF / 01</span></div>
+    <strong>Ideas in.<br /><em>Formats out.</em></strong>
+    <div className="production-art__diagram" aria-hidden="true"><span>BRIEF</span><b>→</b><span>CREATIVE WORKFLOW</span><b>→</b><span>AD FORMATS</span></div>
+    <div className="production-art__tiles" aria-hidden="true"><i>01 / FORMAT</i><i>02 / LANGUAGE</i><i>03 / OUTPUT</i></div>
+    <small>Illustrative workflow · not a live screenshot</small>
+  </div>;
+  if (title === "The Obesity Killer") return <div className="browser-poster production-art production-art--store" role="img" aria-label="Conceptual The Obesity Killer Shopify product storefront and cart diagram, not a website screenshot">
+    <div className="production-art__mast"><span>PRODUCT STOREFRONT / CONCEPTUAL POSTER</span><span>SHOP / 02</span></div>
+    <strong>From product<br /><em>to cart.</em></strong>
+    <div className="production-art__diagram" aria-hidden="true"><span>PRODUCT</span><b>→</b><span>VARIANT</span><b>→</b><span>CART</span></div>
+    <div className="production-art__storefront" aria-hidden="true"><div className="production-art__product"><span>PRODUCT VIEW</span><i /><i /></div><div className="production-art__cart"><span>CART</span><i /><i /><b>CHECKOUT →</b></div></div>
+    <small>Illustrative storefront · not a live screenshot</small>
+  </div>;
   return <div className={`browser-poster ${royalty ? "browser-poster--royalty" : "browser-poster--general"}`}>
     <span>DESIGNED PROJECT POSTER / {royalty ? "REVENUE SYSTEMS" : "PRODUCT ENGINEERING"}</span>
     <strong>{title}</strong>

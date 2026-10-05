@@ -8,7 +8,7 @@ A Next.js portfolio combining the original pinned scroll scenes with the updated
 - **Lenis** for smooth controlled scrolling integrated with the GSAP ticker.
 - **@gsap/react** for scoped animation setup and cleanup.
 - Desktop keeps the viewport pinned while content changes inside each scene.
-- Tablet and mobile switch to a clean stacked layout with lightweight reveals.
+- Tablet and mobile use a stacked layout with scroll driven hero bars, title parallax, experience reveals, a swinging production ticket and contact motion, without pinning or taking over touch gestures.
 - `prefers-reduced-motion` disables cinematic motion while preserving content and navigation.
 - A persistent Three.js shader adds luminous liquid behind every section. Canvas2D and CSS provide fallbacks when WebGL is unavailable.
 - Hero typography reveals on arrival, with the original seven bars retained as dimensional, pointer responsive artwork.
@@ -19,6 +19,7 @@ A Next.js portfolio combining the original pinned scroll scenes with the updated
 1. A wider hero exits quickly, followed by a slower reveal into the selected-work section.
 2. RoyaltyOS, JobHunter, Learn Sphere and CLIFFY use the original pinned card timeline, with numbered navigation, reading holds and accessible active states.
 3. The Aarogya Kaya internship section uses a hanging production ticket and scroll driven reveals.
+   Ad Factory and The Obesity Killer have their own live preview posters below the ticket. The Obesity Killer is Aarogya Kaya LLP's product storefront, not a separate company website.
 4. About stays pinned while the tools track moves horizontally.
 5. Contact expands into view as the final scene.
 
@@ -46,6 +47,8 @@ npm run typecheck
 npm run build
 # With the app running, Python Playwright and Chrome installed:
 python3 tests/browser-smoke.py
+# Includes the original suite plus 16:10 and mobile follow-up regressions:
+python3 tests/browser-followup.py
 ```
 
 For a different test server, set `PORTFOLIO_URL`. For a different Chrome installation, set `CHROME_PATH`.

@@ -52,3 +52,27 @@ Screenshots are excluded from git but remain in the workspace for viewing. Deskt
 - Project previews are labeled conceptual artwork rather than invented production screenshots or measured product metrics.
 - The retained legacy `lint` command is `next lint`, which Next.js 16 no longer supports. No standalone ESLint setup was added or claimed to pass.
 - No numeric code coverage percentage was collected. The source contract checks and browser suite are focused regression checks, not a claim of complete coverage.
+
+## Follow-up: production posters, 16:10 and mobile motion
+
+The screenshot follow-up was reproduced before changes. The count intersected the bars at 1920 by 1200, the headline was sized from the viewport rather than its available column, mobile bar transforms stayed unchanged on scroll, and the requested production posters were absent.
+
+### Changes
+
+- Added `components/ProductionPosters.tsx` and `app/production-posters.css`: two separate production articles for Ad Factory and The Obesity Killer, each with direct live links and opt-in iframe preview controls.
+- Corrected the old experience link to `https://theobesitykiller.com`, labeled as Aarogya Kaya LLP's product storefront. Ad Factory uses `https://ad-factory-pzgh.onrender.com`.
+- Sized the hero title using its actual content column and viewport height, retaining large typography without clipped words.
+- Placed the featured count in a reserved grid row above the bars and faded it before the desktop curtain motion crosses that area.
+- Added unpinned mobile scroll choreography for the bars, headline, experience content and ticket, about text, tools and contact. Horizontal tool movement uses native container scrolling so every tool remains reachable by touch.
+- Bounded mobile ticket rotation and row movement to prevent horizontal overflow on a 320 pixel screen. Removed redundant poster captions on compact screens so they do not sit under buttons; the conceptual artwork label remains visible.
+- Fixed the intro/scroll timeline conflict that left the hero paragraph invisible after reverse navigation.
+
+### Verified against the new production build
+
+`npm test`, `npm run typecheck`, `npm run build` and `git diff --check` passed.
+
+`PORTFOLIO_URL=http://127.0.0.1:3001 python3 tests/browser-followup.py` passed **all 14 Chromium browser tests**. This includes the original eight tests plus six follow-up regressions.
+
+Follow-up checks cover headline text bounds and count/bar separation at 1920 by 1200, 1920 by 1113 (browser chrome accounted for), 1680 by 1050, 1440 by 900 and 1280 by 800. Touch-emulated 320 by 568, 390 by 844 and 768 by 1024 layouts were checked for overflow, poster controls and runtime reduced motion. Mobile bar transforms and ticket transforms were verified to change with scrolling; the count stays clear at several mobile scroll positions. Returning from Work restores the hero paragraph.
+
+Screenshots are in `qa/screens/followup-*.png`. The new hero, production showcase and compact poster screenshots were visually inspected. As before, iframe test responses are intercepted fixtures; these tests verify the correct URLs and controls, not external hosting uptime. Physical mobile hardware and other browser engines were not tested.

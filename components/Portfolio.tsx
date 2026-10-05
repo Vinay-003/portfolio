@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { DraggablePreview } from "./DraggablePreview";
 import { LiquidBackground } from "./LiquidBackground";
+import { ProductionPosters } from "./ProductionPosters";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -250,7 +251,10 @@ export function Portfolio() {
 
           heroTl
             .addLabel("heroExit", 0)
-            .to(".hero-copy, .hero-actions, .hero-meta", { opacity: 0, y: -34, stagger: 0.02, duration: 0.24, ease: "power3.in" }, "heroExit")
+            // Do not capture the intro tween's temporary opacity of zero as
+            // the scroll timeline's starting state when returning to the hero.
+            .fromTo(".hero-copy, .hero-actions, .hero-meta", { opacity: 1, y: 0 }, { opacity: 0, y: -34, stagger: 0.02, duration: 0.24, ease: "power3.in", immediateRender: false }, "heroExit")
+            .to(".hero-art-index", { autoAlpha: 0, y: -16, duration: 0.12 }, "heroExit")
             .to(".hero-title-line:nth-child(1)", { xPercent: -10, duration: 0.32, ease: "power3.inOut" }, "heroExit")
             .to(".hero-title-line:nth-child(2)", { xPercent: 9, duration: 0.32, ease: "power3.inOut" }, "heroExit")
             .to(".hero-title-line:nth-child(3)", { xPercent: -6, scale: 1.06, duration: 0.32, ease: "power3.inOut" }, "heroExit")
@@ -380,17 +384,34 @@ export function Portfolio() {
         );
       });
 
-      mm.add("(max-width: 899px) and (prefers-reduced-motion: no-preference)", () => {
-        gsap.utils.toArray<HTMLElement>("[data-mobile-reveal]").forEach((item) => {
-          gsap.fromTo(item, { y: 70, opacity: 0 }, {
-            y: 0,
-            opacity: 1,
-            duration: 0.85,
-            ease: "power3.out",
-            scrollTrigger: { trigger: item, start: "top 88%", once: true },
+       mm.add("(max-width: 899px) and (prefers-reduced-motion: no-preference)", () => {
+         gsap.to(".hero-art-bar", {
+           y: (index) => index % 2 ? -24 : 32,
+           x: (index) => (index - 3) * 3,
+           rotation: (index) => (index - 3) * 2,
+           scale: (index) => 1 + index * 0.025,
+           stagger: 0.025,
+           ease: "none",
+           scrollTrigger: { trigger: ".hero-scene", start: "top top", end: "+=550", scrub: 0.3 },
+         });
+         gsap.to(".hero-title", { y: -18, ease: "none", scrollTrigger: { trigger: ".hero-scene", start: "top top", end: "+=550", scrub: 0.3 } });
+         gsap.fromTo(".experience-title-line", { yPercent: 35 }, { yPercent: 0, stagger: 0.08, ease: "none", scrollTrigger: { trigger: ".experience-copy", start: "top 95%", end: "top 45%", scrub: 0.5 } });
+          gsap.fromTo(".experience-point", { x: 12, opacity: 0.65 }, { x: 0, opacity: 1, stagger: 0.08, ease: "none", scrollTrigger: { trigger: ".experience-points", start: "top 95%", end: "bottom 70%", scrub: 0.5 } });
+          gsap.fromTo(".experience-proof", { y: 42, rotation: -1, transformOrigin: "50% 0%" }, { y: 0, rotation: 1, ease: "none", scrollTrigger: { trigger: ".experience-copy", start: "top 95%", end: () => `+=${Math.max(500, window.innerHeight)}`, scrub: 0.5 } });
+         gsap.fromTo(".about-quote", { y: 25, opacity: 0.7 }, { y: 0, opacity: 1, ease: "none", scrollTrigger: { trigger: ".about-scene", start: "top 90%", end: "top 45%", scrub: 0.5 } });
+         gsap.fromTo(".about-copy", { y: 16, opacity: 0.7 }, { y: 0, opacity: 1, ease: "none", scrollTrigger: { trigger: ".about-copy", start: "top 95%", end: "top 65%", scrub: 0.5 } });
+          const toolsViewport = root.querySelector<HTMLElement>(".tools-viewport");
+          if (toolsViewport) gsap.to(toolsViewport, {
+            scrollLeft: () => Math.min(110, toolsViewport.scrollWidth - toolsViewport.clientWidth),
+            duration: 0.8,
+            ease: "power2.out",
+            scrollTrigger: { trigger: toolsViewport, start: "top 90%", once: true },
           });
-        });
-      });
+         gsap.fromTo(".contact-panel", { y: 25, opacity: 0.75 }, { y: 0, opacity: 1, ease: "none", scrollTrigger: { trigger: ".contact-scene", start: "top 90%", end: "top 45%", scrub: 0.5 } });
+         gsap.utils.toArray<HTMLElement>("[data-mobile-reveal]").filter((item) => !item.matches(".contact-panel")).forEach((item) => {
+           gsap.fromTo(item, { y: 22, opacity: 0.75 }, { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", scrollTrigger: { trigger: item, start: "top 92%", once: true } });
+         });
+       });
 
       mm.add("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)", () => {
         const cleanups: Array<() => void> = [];
@@ -472,12 +493,12 @@ export function Portfolio() {
           </div>
 
           <div className="hero-art" aria-hidden="true">
-            <div className="hero-art-bars">
+             <div className="hero-art-index">04 <small>featured systems</small></div>
+             <div className="hero-art-bars">
               {Array.from({ length: 7 }).map((_, index) => <span className="hero-art-bar" style={{ "--bar": index } as React.CSSProperties} key={index} />)}
             </div>
             <div className="hero-orb" />
             <div className="hero-art-caption">Scroll to open the system</div>
-             <div className="hero-art-index">04 <small>featured systems</small></div>
           </div>
 
           <div className="hero-meta"><span>Based in India</span><span>Full-stack + automation</span><span>Production-minded</span></div>
@@ -535,7 +556,7 @@ export function Portfolio() {
               <li className="experience-point"><strong>Commerce</strong><span>Shopify content, cart, variant, location, popup and responsive layout fixes.</span></li>
               <li className="experience-point"><strong>Data</strong><span>Meta, Google Analytics, Shopify and Shiprocket reporting pipelines.</span></li>
             </ul>
-            <div className="experience-actions"><a className="experience-link" href="https://ad-factory-pzgh.onrender.com" target="_blank" rel="noreferrer">Ad Factory live ↗</a><a className="experience-link" href="https://github.com/Vinay-003/ad-factory/tree/render-setup" target="_blank" rel="noreferrer">Source ↗</a><a className="experience-link" href="https://arogyamhealth.in" target="_blank" rel="noreferrer">Aarogya Kaya ↗</a></div>
+             <div className="experience-actions"><a className="experience-link" href="https://ad-factory-pzgh.onrender.com" target="_blank" rel="noreferrer">Ad Factory live ↗</a><a className="experience-link" href="https://github.com/Vinay-003/ad-factory/tree/render-setup" target="_blank" rel="noreferrer">Source ↗</a><a className="experience-link" href="https://theobesitykiller.com" target="_blank" rel="noreferrer">The Obesity Killer ↗</a></div>
           </div>
 
           <aside className="experience-proof" aria-label="Production work ticket">
@@ -546,6 +567,7 @@ export function Portfolio() {
             <div className="experience-proof__stamp" aria-hidden="true">BUILD<br />LOG</div>
           </aside>
         </div>
+        <ProductionPosters />
       </section>
 
       <section id="about" className="about-scene scene">
