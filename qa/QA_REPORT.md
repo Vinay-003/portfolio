@@ -8,6 +8,7 @@
 - Local Chromium coverage: all 18 non-network follow-up checks passed across the full run plus focused reruns. The optional real external-site test was skipped. Fixture callback and popup timing issues were corrected; a screenshot attempt against continuously floating artwork was removed from the motion-on test. An initial wheel-scroll timing failure passed on rerun and in the subsequent full run.
 - Direct-link clicks were fixture-tested at 1440, 320 and 390 pixels with HTTP 200 and HTTP 503 responses to prove the portfolio does not intercept failures. These checks do not assert the real destinations are deployed. Poster fit, source links, no automatic destination requests, no horizontal overflow and reduced motion were checked. Desktop and mobile screenshots were visually inspected.
 - Existing dependency warnings and missing GitHub terminal authentication remain unresolved. Historical coming-soon notes below are superseded by this update.
+- Application commit `762aff7` deployed to `https://www.vinaybuilds.me`; unauthenticated GET returned HTTP 200. `PORTFOLIO_URL=https://www.vinaybuilds.me python3 tests/browser-followup.py FollowupTests.test_project_links_open_directly_and_learning_poster_fits FollowupTests.test_learning_poster_respects_reduced_motion` passed both focused production checks.
 
 Checked on 5 October 2026 against the local optimized production build at `http://127.0.0.1:3001`.
 
