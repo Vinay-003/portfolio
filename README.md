@@ -25,8 +25,10 @@ A Next.js portfolio combining the original pinned scroll scenes with the updated
 
 ## Run locally
 
+Use Node.js 24 LTS (the verified local and deployment runtime).
+
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
@@ -42,9 +44,11 @@ npm start
 ## Checks
 
 ```bash
+npm run lint
 npm test
 npm run typecheck
 npm run build
+npm audit
 # With the app running, Python Playwright and Chrome installed:
 python3 tests/browser-smoke.py
 # Includes the original suite plus 16:10 and mobile follow-up regressions:
@@ -52,6 +56,8 @@ python3 tests/browser-followup.py
 # Optional network-dependent check of the real new-tab destinations:
 PORTFOLIO_CHECK_LIVE=1 python3 tests/browser-followup.py FollowupTests.test_real_external_links_open_as_top_level_pages
 ```
+
+Lint uses ESLint's supported CLI with JavaScript, TypeScript and React Hooks recommended rules, rather than the removed `next lint` command. Next.js is pinned to `16.3.8`; the dependency audit reported zero findings after a clean install on 6 October 2026. Audit results can change as new advisories are published.
 
 For a different test server, set `PORTFOLIO_URL`. For a different Chrome installation, set `CHROME_PATH`.
 Browser screenshots are saved in `qa/screens/` and excluded from git. Results and limitations are recorded in `qa/QA_REPORT.md`.

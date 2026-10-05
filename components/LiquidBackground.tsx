@@ -294,7 +294,7 @@ export function LiquidBackground() {
     canvas.className = "liquid-canvas liquid-canvas--webgl";
     canvas.setAttribute("aria-hidden", "true");
 
-    let gl: WebGL2RenderingContext | null = null;
+    let gl: WebGL2RenderingContext | null;
     try {
       gl = canvas.getContext("webgl2", {
         alpha: false,

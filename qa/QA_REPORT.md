@@ -1,5 +1,13 @@
 # Portfolio integration QA
 
+## Latest maintenance: dependencies and lint, 6 October 2026
+
+- Upgraded Next.js from `16.2.10` to exact `16.3.8`. The lockfile now resolves PostCSS `8.5.23`, Sharp `0.35.5`, Nanoid `3.3.20` and baseline-browser-mapping `2.11.27`. No forced audit fix or package override was used.
+- Replaced unsupported `next lint` with the ESLint CLI and recommended JavaScript, TypeScript and React Hooks rules. The Next.js lint preset was trialled but removed because its glob dependency introduced a separate high-severity development advisory. The final full dependency tree has no audit findings. Removed one redundant variable initializer without changing the WebGL fallback flow; retained Next.js's regenerated type references.
+- Clean `npm ci`, `npm run lint` (zero errors/warnings), `npm run typecheck`, `npm test` (5/5), `npm run build`, `npm audit` and production-only `npm audit --omit=dev` passed on Linux, Node `24.14.1`. Zero audit findings is a snapshot, not a guarantee against future advisories.
+- `PORTFOLIO_URL=http://127.0.0.1:3003 python3 tests/browser-followup.py`: 18 passed, one opt-in network test skipped, in a single full Chromium run. Mobile/desktop animations, preview dragging, direct project links, reduced motion, screenshot failure and WebGL fallback remain intact.
+- GitHub CLI and local Git credential helper are still absent. Publication is blocked pending user terminal authentication; no secrets were read or copied and no unauthenticated push was repeated.
+
 ## Latest update: direct links and Learn Sphere poster
 
 - Removed coming-soon labels and deployment gating. Learn Sphere and CLIFFY open their configured URLs directly in a new tab regardless of availability. No portfolio setting needs changing when those sites deploy.
