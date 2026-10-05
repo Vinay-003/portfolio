@@ -23,6 +23,7 @@ type Project = {
   preview: "live" | "learn" | "cliffy";
   previewMode?: "embedded" | "external";
   previewImage?: string;
+  autoLoadLive?: boolean;
   accent: "lime" | "violet" | "cream";
 };
 
@@ -38,8 +39,8 @@ const projects: Project[] = [
     live: "https://royaltyos.vinaybuilds.me",
     repo: "https://github.com/Vinay-003/RoyaltyOs",
     preview: "live",
-    previewMode: "external",
-    previewImage: "/previews/royaltyos.webp",
+    previewMode: "embedded",
+    autoLoadLive: true,
     accent: "lime",
   },
   {
@@ -541,7 +542,7 @@ export function Portfolio() {
                      <a className="project-link" href={project.repo} target="_blank" rel="noreferrer">Source <span aria-hidden="true">↗</span></a>
                   </div>
                 </div>
-                 <div className="project-preview-wrap"><DraggablePreview kind={project.preview} title={project.name} liveUrl={project.live} previewMode={project.previewMode} previewImage={project.previewImage} accent={project.accent} active={stackedProjects || index === activeProject} /></div>
+                  <div className="project-preview-wrap"><DraggablePreview kind={project.preview} title={project.name} liveUrl={project.live} previewMode={project.previewMode} previewImage={project.previewImage} autoLoadLive={project.autoLoadLive} accent={project.accent} active={stackedProjects || index === activeProject} /></div>
               </article>
             ))}
           </div>

@@ -10,16 +10,17 @@ type DraggablePreviewProps = {
   liveUrl?: string;
   previewMode?: "embedded" | "external";
   previewImage?: string;
+  autoLoadLive?: boolean;
   accent?: "lime" | "violet" | "cream";
   active?: boolean;
   preload?: boolean;
 };
 
-export function DraggablePreview({ kind, title, liveUrl, previewMode = "embedded", previewImage, accent = "lime", active = false, preload = false }: DraggablePreviewProps) {
+export function DraggablePreview({ kind, title, liveUrl, previewMode = "embedded", previewImage, autoLoadLive = false, accent = "lime", active = false, preload = false }: DraggablePreviewProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const resetRef = useRef<() => void>(() => undefined);
-  const [loadLive, setLoadLive] = useState(false);
+  const [loadLive, setLoadLive] = useState(autoLoadLive);
   // preload is intentionally not an external network request.
   void preload;
 
@@ -171,7 +172,7 @@ function LiveWebsite({ title, url, previewMode, previewImage, loadLive, onLoad, 
   const safeUrl = url && /^https:\/\//i.test(url) ? url : undefined;
   const showScreenshot = previewMode === "external" && !!previewImage && !imageFailed;
   return <div className="browser-preview" aria-label={`${title} project preview`}>
-    <div className="browser-preview__chrome"><div className="browser-preview__dots" aria-hidden="true"><i /><i /><i /></div><div className="browser-preview__url">{safeUrl ? new URL(safeUrl).hostname : "Project concept"}</div><span className="browser-preview__label">{showScreenshot ? "Website screenshot" : "Project preview"}</span></div>
+    <div className="browser-preview__chrome"><div className="browser-preview__dots" aria-hidden="true"><i /><i /><i /></div><div className="browser-preview__url">{safeUrl ? new URL(safeUrl).hostname : "Project concept"}</div><span className="browser-preview__label">{previewMode === "embedded" && loadLive && active && safeUrl ? "Live website" : showScreenshot ? "Website screenshot" : "Project preview"}</span></div>
     <div className="browser-preview__viewport">
       {showScreenshot ? <img ref={imageRef} className="browser-preview__screenshot" src={previewImage} alt={`${title} website screenshot`} loading="lazy" draggable={false} width="1440" height="1000" onError={() => setImageFailed(true)} /> : <ProjectPoster title={title} />}
       {previewMode === "external" ? <>
