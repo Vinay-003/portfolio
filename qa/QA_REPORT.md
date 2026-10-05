@@ -7,6 +7,7 @@
 - Clean `npm ci`, `npm run lint` (zero errors/warnings), `npm run typecheck`, `npm test` (5/5), `npm run build`, `npm audit` and production-only `npm audit --omit=dev` passed on Linux, Node `24.14.1`. Zero audit findings is a snapshot, not a guarantee against future advisories.
 - `PORTFOLIO_URL=http://127.0.0.1:3003 python3 tests/browser-followup.py`: 18 passed, one opt-in network test skipped, in a single full Chromium run. Mobile/desktop animations, preview dragging, direct project links, reduced motion, screenshot failure and WebGL fallback remain intact.
 - GitHub CLI and local Git credential helper are still absent. Publication is blocked pending user terminal authentication; no secrets were read or copied and no unauthenticated push was repeated.
+- Application commit `b293a19` deployed successfully to `https://www.vinaybuilds.me` via `https://portfolio-6p3mjmgsx-vinay-003s-projects.vercel.app`. Vercel's clean installation also reported zero vulnerabilities. The custom domain returned unauthenticated HTTP 200; three focused production checks passed for direct links/poster fit, reduced motion and wheel/runtime-motion/WebGL fallback.
 
 ## Latest update: direct links and Learn Sphere poster
 
