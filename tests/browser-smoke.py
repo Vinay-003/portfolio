@@ -44,6 +44,56 @@ class PortfolioBrowserTests(unittest.TestCase):
         rect = page.locator(".work-stage").bounding_box()
         self.assertLess(abs(rect["y"]), 5, "Navigation must land at the pin, not 176px above it")
 
+    def test_project_transitions_are_scrubbed_and_reversible(self):
+        page = self.open_page()
+        self.assertEqual(page.locator(".project-chapter").count(), 4)
+        destinations = []
+        for name in ["RoyaltyOS", "JobHunter", "Learn Sphere", "CLIFFY"]:
+            page.get_by_role("button", name=f"View {name}", exact=True).click()
+            page.wait_for_timeout(1900)
+            destinations.append(page.evaluate("scrollY"))
+            panel = page.locator(".project-panel.is-active")
+            self.assertEqual(panel.locator("h3").inner_text(), name)
+            self.assertEqual(panel.get_attribute("aria-hidden"), "false")
+            self.assertEqual(page.locator(".project-panel:not([inert])").count(), 1)
+            self.assertEqual(panel.locator(".project-actions").evaluate("el => getComputedStyle(el).opacity"), "1")
+
+        for index in range(3):
+            # The latter part of each chapter interval is the animated handoff.
+            halfway = destinations[index] + .75 * (destinations[index + 1] - destinations[index])
+            page.evaluate("y => window.scrollTo(0, y)", halfway)
+            page.wait_for_timeout(1200)
+            self.assertLess(abs(page.evaluate("scrollY") - halfway), 5, "Do not snap away from a transition")
+            incoming = page.locator(".project-panel").nth(index + 1)
+            self.assertNotEqual(incoming.evaluate("el => getComputedStyle(el).transform"), "none")
+            self.assertTrue(incoming.evaluate("el => getComputedStyle(el).transform.startsWith('matrix3d')"), "Incoming cards should move through depth")
+            self.capture(page, f"project-transition-{index + 1}")
+
+        page.get_by_role("button", name="View RoyaltyOS", exact=True).click()
+        page.wait_for_timeout(2000)
+        first = page.locator(".project-panel").first
+        self.assertEqual(first.locator("h3").inner_text(), "RoyaltyOS")
+        self.assertEqual(first.get_attribute("aria-hidden"), "false")
+        self.assertEqual(first.evaluate("el => getComputedStyle(el).opacity"), "1")
+
+    def test_project_motion_mobile_and_reduced_fallbacks(self):
+        mobile = self.open_page(390, 844, is_mobile=True, has_touch=True)
+        panel = mobile.locator(".project-panel").nth(1)
+        title = panel.locator("h3")
+        before = title.evaluate("el => getComputedStyle(el).transform")
+        panel.scroll_into_view_if_needed()
+        mobile.wait_for_timeout(1300)
+        self.assertNotEqual(title.evaluate("el => getComputedStyle(el).transform"), before)
+        self.assertEqual(mobile.locator(".pin-spacer").count(), 0)
+        self.assertEqual(mobile.locator(".project-panel[inert]").count(), 0)
+        self.assertLessEqual(mobile.evaluate("document.documentElement.scrollWidth"), 390)
+        reduced = self.open_page(reduced_motion="reduce")
+        self.assertEqual(reduced.locator(".pin-spacer").count(), 0)
+        for panel in reduced.locator(".project-panel").all():
+            self.assertEqual(panel.get_attribute("aria-hidden"), "false")
+            self.assertEqual(panel.evaluate("el => getComputedStyle(el).transform"), "none")
+            self.assertEqual(panel.locator("h3").evaluate("el => getComputedStyle(el).opacity"), "1")
+
     def test_mobile_all_project_previews_are_interactive(self):
         page = self.open_page(390, 844)
         self.assertEqual(page.locator(".project-panel[inert]").count(), 0)
