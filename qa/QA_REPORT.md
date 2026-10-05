@@ -96,3 +96,14 @@ Actual deployed response headers explain the reported error. RoyaltyOS sends `Co
 `PORTFOLIO_URL=http://127.0.0.1:3001 PORTFOLIO_CHECK_LIVE=1 python3 tests/browser-followup.py` passed **all 17 Chromium browser tests** against the final production build. The new checks verify screenshot loading, no blocked-site requests/iframes before clicking, desktop/mobile external controls, image-failure fallback, and actual new-tab opening of both deployed sites without mocked responses. The real destinations loaded at their correct URLs and had their expected page titles. Their public captures also returned HTTP 200.
 
 Updated screenshot evidence: `qa/screens/external-royaltyos-1440.png`, `qa/screens/external-royaltyos-390.png`, `qa/screens/external-the-obesity-killer-1440.png` and `qa/screens/external-the-obesity-killer-390.png`. Desktop RoyaltyOS and mobile storefront screenshots were visually inspected. This is a point-in-time hosting check, not a guarantee of uptime; physical phones and Safari/Firefox remain untested.
+
+## Vercel production deployment
+
+- Project: `vinay-003s-projects/portfolio`, connected to `https://github.com/Vinay-003/portfolio`.
+- Production alias: https://portfolio-three-rust-33.vercel.app
+- Deployed application commit: `8a8f052`. Vercel reported production status **Ready**; an unauthenticated request returned HTTP 200 with the expected portfolio content.
+- `PORTFOLIO_URL=https://portfolio-three-rust-33.vercel.app PORTFOLIO_CHECK_LIVE=1 python3 tests/browser-followup.py` passed all **17 tests** on the actual deployed site.
+- `vercel.json` uses the Next.js framework, `npm ci`, and `npm run build`. `.vercelignore` excludes private workspace metadata, environment files and generated files; local Vercel linkage and credentials remain ignored.
+- GitHub push was attempted but failed because the terminal has no HTTPS GitHub credentials. The changes are committed locally, not yet pushed. Authenticate GitHub locally before running `git push origin main`; the Vercel GitHub connection alone does not authenticate local Git.
+- `npm audit --omit=dev` reported five dependency findings: one moderate, three high and one critical, including Next.js. No automatic dependency upgrade was performed as part of deployment; security remediation remains open.
+- Custom domain not added: the desired domain was not supplied. Add it under the project's **Settings > Domains**, then copy the exact displayed A or CNAME target to the DNS provider. Keep unrelated email and other subdomain records unchanged.
