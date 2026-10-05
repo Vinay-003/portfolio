@@ -550,9 +550,9 @@ export function Portfolio() {
           <div className="project-deck">
             {projects.map((project, index) => (
               <article className={`project-panel project-panel--${project.accent} ${index === activeProject ? "is-active" : ""}`} key={project.name} style={{ zIndex: index + 1 }} aria-hidden={!stackedProjects && index !== activeProject} inert={!stackedProjects && index !== activeProject}>
-                <div className="project-chapter" aria-hidden="true"><span className="project-chapter__number">{project.number}</span><span className="project-chapter__name">{project.name}</span></div>
                 <div className="project-panel__copy">
                   <div className="project-panel__top"><span>{project.number} / 04</span><span>{project.label}</span></div>
+                  <div className="project-chapter" aria-hidden="true"><span className="project-chapter__number">{project.number}</span><span className="project-chapter__name">{project.name}</span></div>
                   <h3><span className="project-title__text">{project.name}</span></h3>
                   <p className="project-panel__kicker">{project.kicker}</p>
                   <p className="project-panel__description">{project.description}</p>

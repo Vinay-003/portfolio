@@ -7,11 +7,12 @@
   .project-title__text { display:block; }
 }
 
-.project-chapter { position:absolute; inset:0; z-index:0; overflow:hidden; border-radius:inherit; pointer-events:none; user-select:none; }
-.project-chapter__number { position:absolute; top:12%; left:28%; color:transparent; -webkit-text-stroke:1px rgba(218,239,214,.13); font-family:"Space Grotesk",sans-serif; font-size:clamp(12rem,35vw,37rem); font-weight:700; line-height:.75; letter-spacing:-.11em; white-space:nowrap; }
+.project-chapter { position:relative; flex:none; align-self:flex-start; max-width:100%; margin-top:auto; margin-bottom:.65rem; pointer-events:none; user-select:none; }
+.project-chapter__number { display:block; width:max-content; max-width:100%; color:transparent; -webkit-text-stroke:1px rgba(218,239,214,.25); font-family:"Space Grotesk",sans-serif; font-size:clamp(4rem,7vw,7rem); font-weight:700; line-height:1; letter-spacing:-.09em; white-space:nowrap; }
 .project-panel--violet .project-chapter__number { -webkit-text-stroke-color:rgba(186,217,225,.13); }
 .project-panel--cream .project-chapter__number { -webkit-text-stroke-color:rgba(229,234,223,.13); }
-.project-chapter__name { position:absolute; right:1.15rem; top:50%; color:rgba(220,235,222,.32); font-size:.58rem; font-weight:800; letter-spacing:.22em; text-transform:uppercase; writing-mode:vertical-rl; transform:translateY(-50%) rotate(180deg); }
+.project-chapter__name { display:none; }
+.project-panel h3 { margin-top:0; }
 
 /* The cue lives in the stage gutter so it never consumes the deck's 490px minimum. */
 .work-stage { position:relative; }
@@ -23,14 +24,12 @@
   .project-deck { perspective:none; }
   .project-panel { transform:none; }
   .project-panel__copy,.project-preview-wrap { position:relative; z-index:1; }
-  .project-chapter__number { top:12%; left:32%; font-size:clamp(9rem,33vw,22rem); -webkit-text-stroke-color:rgba(218,239,214,.08); }
-  .project-chapter__name { right:.65rem; opacity:.5; }
+  .project-chapter__number { font-size:clamp(4rem,9vw,5.5rem); -webkit-text-stroke-color:rgba(218,239,214,.25); }
   .project-title__text { display:block; }
   .work-scroll-cue { display:none; }
 }
 @media (max-width:620px) {
-  .project-chapter__number { top:3.5rem; left:36%; font-size:clamp(7rem,42vw,14rem); }
-  .project-chapter__name { top:5rem; }
+  .project-chapter__number { font-size:4.5rem; }
 }
 @media (prefers-reduced-motion:reduce) {
   .project-chapter,.work-scroll-cue { display:none!important; }
