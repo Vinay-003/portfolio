@@ -167,7 +167,7 @@ class FollowupTests(smoke.PortfolioBrowserTests):
         page = self.open_page()
         posters = page.locator('.production-poster')
         self.assertEqual(posters.count(), 2, "Ad Factory and the product site each need a live poster")
-        expected = [("Ad Factory", "https://ad-factory-pzgh.onrender.com"),
+        expected = [("Ad Factory", "https://adfactory.vinaybuilds.me"),
                     ("The Obesity Killer", "https://theobesitykiller.com")]
         self.assertEqual(page.locator('a[href="https://arogyamhealth.in"]').count(), 0)
         for name, url in expected:
@@ -188,6 +188,41 @@ class FollowupTests(smoke.PortfolioBrowserTests):
                 poster.get_by_role('button', name='Back to project poster').click()
                 self.assertEqual(poster.locator('iframe').count(), 0)
         self.capture(page, "followup-production-posters")
+
+    def test_upcoming_projects_keep_posters_without_dead_live_links(self):
+        for width, height in [(1440, 900), (320, 568), (390, 844)]:
+            page = self.open_page(width, height, is_mobile=width < 900, has_touch=width < 900)
+            requests = []
+            page.on('request', lambda request: requests.append(request.url)
+                    if any(host in request.url for host in ['learnsphere.vinaybuilds.me', 'cliffy.vinaybuilds.me']) else None)
+            for name, host, artwork, repo in [
+                ('Learn Sphere', 'learnsphere.vinaybuilds.me', '.system-visual--learn', 'https://github.com/Vinay-003/skillarious'),
+                ('CLIFFY', 'cliffy.vinaybuilds.me', '.system-visual--terminal', 'https://github.com/Vinay-003/aishell2'),
+            ]:
+                card = page.locator('.project-panel').filter(has=page.get_by_role('heading', name=name, exact=True))
+                if width >= 900:
+                    page.get_by_role('button', name=f'View {name}', exact=True).click()
+                else:
+                    card.scroll_into_view_if_needed()
+                page.wait_for_timeout(2200 if width >= 900 else 800)
+                status = card.locator('.project-launch-status')
+                self.assertTrue(status.is_visible())
+                self.assertIn('in development / coming soon', status.inner_text().lower())
+                self.assertTrue(status.get_by_text(host, exact=True).is_visible())
+                self.assertEqual(status.locator('a').count(), 0)
+                self.assertEqual(card.locator(f'a[href="https://{host}"]').count(), 0)
+                self.assertEqual(card.get_by_role('link', name='Open live').count(), 0)
+                self.assertEqual(card.get_by_role('button', name='Load interactive preview').count(), 0)
+                self.assertEqual(card.locator('iframe').count(), 0)
+                self.assertTrue(card.locator(artwork).is_visible())
+                self.assertEqual(card.get_by_role('link', name='View GitHub').get_attribute('href'), repo)
+                self.assertEqual(page.get_by_role('heading', name='Skillarious', exact=True).count(), 0)
+                actions = card.locator('.project-actions').bounding_box()
+                panel = card.bounding_box()
+                self.assertLessEqual(actions['y'] + actions['height'], panel['y'] + panel['height'] + 1)
+                self.capture(page, f'upcoming-{name.lower().replace(" ", "-")}-{width}')
+            self.assertEqual(requests, [], 'Upcoming domains must not be requested before launch')
+            self.assertLessEqual(page.evaluate('document.documentElement.scrollWidth'), width)
 
 
 if __name__ == "__main__":

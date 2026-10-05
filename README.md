@@ -64,6 +64,10 @@ RoyaltyOS and The Obesity Killer block iframe embedding, so their cards show rea
 
 JobHunter and Ad Factory retain opt-in **Load interactive preview** buttons and return-to-poster controls. Learn Sphere and CLIFFY remain labeled conceptual diagrams. External hosting availability and embedding policies can change; direct live and repository links remain available. Never disable a deployed site's security headers or proxy around its frame restrictions just to make a poster interactive.
 
+Ad Factory uses `https://adfactory.vinaybuilds.me` for both its production preview and experience link. Learn Sphere and CLIFFY are marked **In development / Coming soon**, with `https://learnsphere.vinaybuilds.me` and `https://cliffy.vinaybuilds.me` reserved in their project settings. These destinations are displayed as plain text, not requested or linked while undeployed. Their existing conceptual posters and GitHub links are preserved; `skillarious` is the Learn Sphere repository slug, not the displayed project name.
+
+When either project launches, remove its `deploymentStatus: "coming-soon"` entry in `components/Portfolio.tsx` to enable **Open live** at the configured URL. The conceptual poster remains unchanged. Switch its `preview` to `"live"` only if you separately want an opt-in website preview and have verified the destination permits embedding.
+
 ## Editing content
 
 - Main content and animation timelines: `components/Portfolio.tsx`

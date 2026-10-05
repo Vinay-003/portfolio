@@ -107,3 +107,11 @@ Updated screenshot evidence: `qa/screens/external-royaltyos-1440.png`, `qa/scree
 - GitHub push was attempted but failed because the terminal has no HTTPS GitHub credentials. The changes are committed locally, not yet pushed. Authenticate GitHub locally before running `git push origin main`; the Vercel GitHub connection alone does not authenticate local Git.
 - `npm audit --omit=dev` reported five dependency findings: one moderate, three high and one critical, including Next.js. No automatic dependency upgrade was performed as part of deployment; security remediation remains open.
 - Custom domain not added: the desired domain was not supplied. Add it under the project's **Settings > Domains**, then copy the exact displayed A or CNAME target to the DNS provider. Keep unrelated email and other subdomain records unchanged.
+
+## Project destinations and upcoming launches
+
+- Corrected Ad Factory's preview and experience links to `https://adfactory.vinaybuilds.me`. A public GET returned HTTP 200; iframe interactions remain fixture-tested, not verified against the real destination.
+- Learn Sphere and CLIFFY retain their original conceptual artwork, with future destinations `https://learnsphere.vinaybuilds.me` and `https://cliffy.vinaybuilds.me`. Both use `deploymentStatus: "coming-soon"`, display non-clickable launch status and hostname, and suppress live links and iframe URLs. Remove that setting after launch to enable the stored link without changing the poster.
+- The Learn Sphere display name stays unchanged. The `skillarious` GitHub repository slug is preserved; no repository rename was assumed.
+- `npm test` passed four checks; `npm run typecheck`, `npm run build`, and `git diff --check` passed. The local Chromium follow-up run passed 16 tests and skipped the optional real external-link check; its new launch-status test initially failed because CSS uppercases visible text. After correcting the assertion, the focused test passed at 1440, 320 and 390 pixels, completing all 17 non-network checks.
+- Upcoming-project checks verify unchanged artwork, working source links, visible hostnames, no live controls, no requests to upcoming domains, and no horizontal overflow. `components/DraggablePreview.tsx` and all poster image assets are unchanged.

@@ -19,6 +19,7 @@ type Project = {
   description: string;
   tags: string[];
   live?: string;
+  deploymentStatus?: "coming-soon";
   repo: string;
   preview: "live" | "learn" | "cliffy";
   previewMode?: "embedded" | "external";
@@ -61,8 +62,10 @@ const projects: Project[] = [
     label: "Course marketplace with real product flows",
     kicker: "Three roles, real payments, persistence and moderation. This is not a static course UI.",
     description:
-      "A course marketplace built beyond the landing page. Teachers can publish, students can enroll and ask questions, and admins can keep things in order. I built the login, database and verified Razorpay payments too.",
+      "A course marketplace in development beyond the landing page. I'm building flows for teachers to publish, students to enroll and ask questions, and admins to keep things in order, alongside login, database and Razorpay payments.",
     tags: ["Next.js", "Express", "TypeScript", "PostgreSQL", "Drizzle", "Razorpay"],
+    live: "https://learnsphere.vinaybuilds.me",
+    deploymentStatus: "coming-soon",
     repo: "https://github.com/Vinay-003/skillarious",
     preview: "learn",
     accent: "cream",
@@ -75,6 +78,8 @@ const projects: Project[] = [
     description:
       "Sometimes I know what I want to do, just not the command for it. CLIFFY turns plain language into shell commands, offers suggestions and asks before anything destructive. It helps with the terminal without taking the controls away.",
     tags: ["Python", "OpenAI API", "CLI", "Async", "Safety", "Automation"],
+    live: "https://cliffy.vinaybuilds.me",
+    deploymentStatus: "coming-soon",
     repo: "https://github.com/Vinay-003/aishell2",
     preview: "cliffy",
     accent: "lime",
@@ -535,11 +540,13 @@ export function Portfolio() {
                   <p className="project-panel__description">{project.description}</p>
                   <ul className="tag-list">{project.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul>
                   <div className="project-actions">
-                    {project.live && <a className="project-link" href={project.live} target="_blank" rel="noreferrer">Open live <span aria-hidden="true">↗</span></a>}
-                    <a className="project-link" href={project.repo} target="_blank" rel="noreferrer">{project.live ? "Source" : "View GitHub"} <span aria-hidden="true">↗</span></a>
+                    {project.deploymentStatus === "coming-soon" ? (
+                      <span className="project-launch-status">In development / Coming soon {project.live && <span>{new URL(project.live).hostname}</span>}</span>
+                    ) : project.live && <a className="project-link" href={project.live} target="_blank" rel="noreferrer">Open live <span aria-hidden="true">↗</span></a>}
+                    <a className="project-link" href={project.repo} target="_blank" rel="noreferrer">{project.live && project.deploymentStatus !== "coming-soon" ? "Source" : "View GitHub"} <span aria-hidden="true">↗</span></a>
                   </div>
                 </div>
-                <div className="project-preview-wrap"><DraggablePreview kind={project.preview} title={project.name} liveUrl={project.live} previewMode={project.previewMode} previewImage={project.previewImage} accent={project.accent} active={stackedProjects || index === activeProject} /></div>
+                <div className="project-preview-wrap"><DraggablePreview kind={project.preview} title={project.name} liveUrl={project.deploymentStatus === "coming-soon" ? undefined : project.live} previewMode={project.previewMode} previewImage={project.previewImage} accent={project.accent} active={stackedProjects || index === activeProject} /></div>
               </article>
             ))}
           </div>
@@ -560,7 +567,7 @@ export function Portfolio() {
               <li className="experience-point"><strong>Commerce</strong><span>Shopify content, cart, variant, location, popup and responsive layout fixes.</span></li>
               <li className="experience-point"><strong>Data</strong><span>Meta, Google Analytics, Shopify and Shiprocket reporting pipelines.</span></li>
             </ul>
-             <div className="experience-actions"><a className="experience-link" href="https://ad-factory-pzgh.onrender.com" target="_blank" rel="noreferrer">Ad Factory live ↗</a><a className="experience-link" href="https://github.com/Vinay-003/ad-factory/tree/render-setup" target="_blank" rel="noreferrer">Source ↗</a><a className="experience-link" href="https://theobesitykiller.com" target="_blank" rel="noreferrer">The Obesity Killer ↗</a></div>
+             <div className="experience-actions"><a className="experience-link" href="https://adfactory.vinaybuilds.me" target="_blank" rel="noreferrer">Ad Factory live ↗</a><a className="experience-link" href="https://github.com/Vinay-003/ad-factory/tree/render-setup" target="_blank" rel="noreferrer">Source ↗</a><a className="experience-link" href="https://theobesitykiller.com" target="_blank" rel="noreferrer">The Obesity Killer ↗</a></div>
           </div>
 
           <aside className="experience-proof" aria-label="Production work ticket">

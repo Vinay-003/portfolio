@@ -19,7 +19,7 @@ const production: ProductionItem[] = [
     title: "Ad Factory",
     category: "Creative production pipeline",
     description: "At Aarogya Kaya LLP, I helped build a workflow that turns briefs into ads across five formats and three language modes. FastAPI, MongoDB and Playwright handle the pieces behind it.",
-    live: "https://ad-factory-pzgh.onrender.com",
+    live: "https://adfactory.vinaybuilds.me",
     source: "https://github.com/Vinay-003/ad-factory/tree/render-setup",
     theme: "factory",
     previewMode: "embedded",

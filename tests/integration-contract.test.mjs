@@ -27,3 +27,20 @@ test('frame-blocked sites are explicitly configured as external screenshot previ
     assert.ok(readFileSync(`public/previews/${path}.webp`).length > 1000);
   }
 });
+
+test('upcoming projects reserve their destinations without replacing conceptual posters', () => {
+  for (const [name, next, host, kind] of [
+    ['Learn Sphere', 'name: "CLIFFY"', 'learnsphere.vinaybuilds.me', 'learn'],
+    ['CLIFFY', 'const tools', 'cliffy.vinaybuilds.me', 'cliffy'],
+  ]) {
+    const config = portfolio.slice(portfolio.indexOf(`name: "${name}"`), portfolio.indexOf(next));
+    assert.ok(config.includes(`live: "https://${host}"`));
+    assert.ok(config.includes('deploymentStatus: "coming-soon"'));
+    assert.ok(config.includes(`preview: "${kind}"`));
+  }
+  const production = readFileSync('components/ProductionPosters.tsx', 'utf8');
+  for (const file of [portfolio, production]) {
+    assert.ok(file.includes('https://adfactory.vinaybuilds.me'));
+    assert.ok(!file.includes('ad-factory-pzgh.onrender.com'));
+  }
+});
