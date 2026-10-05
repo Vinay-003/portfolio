@@ -1,0 +1,9 @@
+.opencode/
+.git/
+.vercel/
+.env*
+node_modules/
+.next/
+qa/screens/
+**/__pycache__/
+*.tsbuildinfo

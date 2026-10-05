@@ -8,3 +8,4 @@ npm-debug.log*
 __pycache__/
 qa/screens/
 .opencode/omnirush/
+.vercel/
