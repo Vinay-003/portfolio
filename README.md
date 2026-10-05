@@ -62,11 +62,11 @@ The existing `lint` script uses the removed `next lint` command. A standalone ES
 
 RoyaltyOS and The Obesity Killer block iframe embedding, so their cards show real, locally stored public website screenshots with **Open live site** links that open a separate tab. These screenshots are static, not interactive or automatically refreshed. If an image fails, a labeled conceptual poster remains available with the same external link.
 
-JobHunter and Ad Factory retain opt-in **Load interactive preview** buttons and return-to-poster controls. Learn Sphere and CLIFFY remain labeled conceptual diagrams. External hosting availability and embedding policies can change; direct live and repository links remain available. Never disable a deployed site's security headers or proxy around its frame restrictions just to make a poster interactive.
+JobHunter and Ad Factory retain opt-in **Load interactive preview** buttons and return-to-poster controls. Learn Sphere has an editorial learning poster with a dimensional book illustration; CLIFFY retains its conceptual terminal preview. External hosting availability and embedding policies can change; direct live and repository links remain available. Never disable a deployed site's security headers or proxy around its frame restrictions just to make a poster interactive.
 
-Ad Factory uses `https://adfactory.vinaybuilds.me` for both its production preview and experience link. Learn Sphere and CLIFFY are marked **In development / Coming soon**, with `https://learnsphere.vinaybuilds.me` and `https://cliffy.vinaybuilds.me` reserved in their project settings. These destinations are displayed as plain text, not requested or linked while undeployed. Their existing conceptual posters and GitHub links are preserved; `skillarious` is the Learn Sphere repository slug, not the displayed project name.
+Ad Factory uses `https://adfactory.vinaybuilds.me` for both its production preview and experience link. Learn Sphere and CLIFFY have direct **Open live** links to `https://learnsphere.vinaybuilds.me` and `https://cliffy.vinaybuilds.me`. There are no coming-soon labels or deployment checks: the destination loads or returns its own error. Posters do not automatically request these domains. GitHub links are preserved; `skillarious` is the Learn Sphere repository slug, not the displayed project name.
 
-When either project launches, remove its `deploymentStatus: "coming-soon"` entry in `components/Portfolio.tsx` to enable **Open live** at the configured URL. The conceptual poster remains unchanged. Switch its `preview` to `"live"` only if you separately want an opt-in website preview and have verified the destination permits embedding.
+No portfolio setting needs changing when either destination deploys. Switch its `preview` to `"live"` only if you separately want an opt-in website preview and have verified the destination permits embedding.
 
 ## Editing content
 

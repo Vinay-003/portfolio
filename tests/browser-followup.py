@@ -189,15 +189,15 @@ class FollowupTests(smoke.PortfolioBrowserTests):
                 self.assertEqual(poster.locator('iframe').count(), 0)
         self.capture(page, "followup-production-posters")
 
-    def test_upcoming_projects_keep_posters_without_dead_live_links(self):
+    def test_project_links_open_directly_and_learning_poster_fits(self):
         for width, height in [(1440, 900), (320, 568), (390, 844)]:
             page = self.open_page(width, height, is_mobile=width < 900, has_touch=width < 900)
             requests = []
             page.on('request', lambda request: requests.append(request.url)
                     if any(host in request.url for host in ['learnsphere.vinaybuilds.me', 'cliffy.vinaybuilds.me']) else None)
-            for name, host, artwork, repo in [
-                ('Learn Sphere', 'learnsphere.vinaybuilds.me', '.system-visual--learn', 'https://github.com/Vinay-003/skillarious'),
-                ('CLIFFY', 'cliffy.vinaybuilds.me', '.system-visual--terminal', 'https://github.com/Vinay-003/aishell2'),
+            for name, host, artwork, repo, response in [
+                ('Learn Sphere', 'learnsphere.vinaybuilds.me', '.system-visual--learn', 'https://github.com/Vinay-003/skillarious', 200),
+                ('CLIFFY', 'cliffy.vinaybuilds.me', '.system-visual--terminal', 'https://github.com/Vinay-003/aishell2', 503),
             ]:
                 card = page.locator('.project-panel').filter(has=page.get_by_role('heading', name=name, exact=True))
                 if width >= 900:
@@ -205,24 +205,55 @@ class FollowupTests(smoke.PortfolioBrowserTests):
                 else:
                     card.scroll_into_view_if_needed()
                 page.wait_for_timeout(2200 if width >= 900 else 800)
-                status = card.locator('.project-launch-status')
-                self.assertTrue(status.is_visible())
-                self.assertIn('in development / coming soon', status.inner_text().lower())
-                self.assertTrue(status.get_by_text(host, exact=True).is_visible())
-                self.assertEqual(status.locator('a').count(), 0)
-                self.assertEqual(card.locator(f'a[href="https://{host}"]').count(), 0)
-                self.assertEqual(card.get_by_role('link', name='Open live').count(), 0)
+                self.assertEqual(page.get_by_text('Coming soon', exact=False).count(), 0)
+                self.assertEqual(page.locator('.project-launch-status').count(), 0)
+                link = card.get_by_role('link', name='Open live')
+                self.assertTrue(link.is_visible())
+                self.assertEqual(link.get_attribute('href'), f'https://{host}')
+                self.assertEqual(link.get_attribute('target'), '_blank')
+                self.assertIn('noreferrer', link.get_attribute('rel'))
                 self.assertEqual(card.get_by_role('button', name='Load interactive preview').count(), 0)
                 self.assertEqual(card.locator('iframe').count(), 0)
                 self.assertTrue(card.locator(artwork).is_visible())
-                self.assertEqual(card.get_by_role('link', name='View GitHub').get_attribute('href'), repo)
+                self.assertEqual(card.get_by_role('link', name='Source').get_attribute('href'), repo)
                 self.assertEqual(page.get_by_role('heading', name='Skillarious', exact=True).count(), 0)
                 actions = card.locator('.project-actions').bounding_box()
                 panel = card.bounding_box()
                 self.assertLessEqual(actions['y'] + actions['height'], panel['y'] + panel['height'] + 1)
-                self.capture(page, f'upcoming-{name.lower().replace(" ", "-")}-{width}')
-            self.assertEqual(requests, [], 'Upcoming domains must not be requested before launch')
+                if name == 'Learn Sphere':
+                    self.assertIn('conceptual', card.locator(artwork).get_attribute('aria-label'))
+                    self.assertEqual(card.locator('.learn-book').count(), 1)
+                    self.assertTrue(card.locator(artwork).evaluate('el => el.scrollWidth <= el.clientWidth && el.scrollHeight <= el.clientHeight'))
+                    fits = card.locator(artwork).evaluate('''el => {
+                        const box = el.getBoundingClientRect();
+                        return [...el.querySelectorAll('.learn-mast, .learn-heading, .learn-copy, .learn-foot')].every(child => {
+                            const r = child.getBoundingClientRect();
+                            return r.left >= box.left && r.right <= box.right && r.top >= box.top && r.bottom <= box.bottom;
+                        });
+                    }''')
+                    self.assertTrue(fits, 'Learning poster text must fit inside its card')
+                self.capture(page, f'direct-{name.lower().replace(" ", "-")}-{width}')
+                self.assertEqual(requests, [], 'Domains must only be requested on a deliberate click')
+                # Fixtures prove navigation for success and failure, not remote availability.
+                page.context.route(f'https://{host}/**', lambda route, request, status=response: route.fulfill(
+                    status=status, content_type='text/html', body=f'<h1>Destination response {status}</h1>'))
+                with page.expect_popup() as opened:
+                    link.click()
+                popup = opened.value
+                popup.wait_for_url(f'https://{host}/')
+                popup.wait_for_load_state('domcontentloaded')
+                self.assertEqual(popup.url, f'https://{host}/')
+                self.assertTrue(popup.get_by_role('heading', name=f'Destination response {response}').is_visible())
+                popup.close()
             self.assertLessEqual(page.evaluate('document.documentElement.scrollWidth'), width)
+
+    def test_learning_poster_respects_reduced_motion(self):
+        page = self.open_page(390, 844, is_mobile=True, has_touch=True, reduced_motion='reduce')
+        poster = page.locator('.system-visual--learn')
+        poster.scroll_into_view_if_needed()
+        self.assertEqual(poster.locator('.learn-book').evaluate('el => getComputedStyle(el).animationName'), 'none')
+        poster.screenshot(path='qa/screens/learn-sphere-poster-mobile.png')
+        self.capture(page, 'learn-sphere-reduced-motion')
 
 
 if __name__ == "__main__":

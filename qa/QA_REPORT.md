@@ -1,5 +1,14 @@
 # Portfolio integration QA
 
+## Latest update: direct links and Learn Sphere poster
+
+- Removed coming-soon labels and deployment gating. Learn Sphere and CLIFFY open their configured URLs directly in a new tab regardless of availability. No portfolio setting needs changing when those sites deploy.
+- Replaced Learn Sphere's node diagram with an ivory, forest-green and coral editorial poster, serif typography and an illustrated open book. Existing drag/reset motion is preserved; book animation respects reduced motion. CLIFFY and production artwork are unchanged.
+- `npm test` passed five checks; `npm run typecheck`, `npm run build`, and `git diff --check` passed.
+- Local Chromium coverage: all 18 non-network follow-up checks passed across the full run plus focused reruns. The optional real external-site test was skipped. Fixture callback and popup timing issues were corrected; a screenshot attempt against continuously floating artwork was removed from the motion-on test. An initial wheel-scroll timing failure passed on rerun and in the subsequent full run.
+- Direct-link clicks were fixture-tested at 1440, 320 and 390 pixels with HTTP 200 and HTTP 503 responses to prove the portfolio does not intercept failures. These checks do not assert the real destinations are deployed. Poster fit, source links, no automatic destination requests, no horizontal overflow and reduced motion were checked. Desktop and mobile screenshots were visually inspected.
+- Existing dependency warnings and missing GitHub terminal authentication remain unresolved. Historical coming-soon notes below are superseded by this update.
+
 Checked on 5 October 2026 against the local optimized production build at `http://127.0.0.1:3001`.
 
 ## Delivered

@@ -28,19 +28,31 @@ test('frame-blocked sites are explicitly configured as external screenshot previ
   }
 });
 
-test('upcoming projects reserve their destinations without replacing conceptual posters', () => {
+test('project destinations open directly with no deployment gating', () => {
   for (const [name, next, host, kind] of [
     ['Learn Sphere', 'name: "CLIFFY"', 'learnsphere.vinaybuilds.me', 'learn'],
     ['CLIFFY', 'const tools', 'cliffy.vinaybuilds.me', 'cliffy'],
   ]) {
     const config = portfolio.slice(portfolio.indexOf(`name: "${name}"`), portfolio.indexOf(next));
     assert.ok(config.includes(`live: "https://${host}"`));
-    assert.ok(config.includes('deploymentStatus: "coming-soon"'));
+    assert.ok(!config.includes('deploymentStatus'));
     assert.ok(config.includes(`preview: "${kind}"`));
   }
+  assert.ok(!portfolio.includes('Coming soon'));
+  assert.ok(!portfolio.includes('project-launch-status'));
+  assert.ok(portfolio.includes('href={project.live}'));
   const production = readFileSync('components/ProductionPosters.tsx', 'utf8');
   for (const file of [portfolio, production]) {
     assert.ok(file.includes('https://adfactory.vinaybuilds.me'));
     assert.ok(!file.includes('ad-factory-pzgh.onrender.com'));
   }
+});
+
+test('Learn Sphere uses an editorial poster with a reduced-motion fallback', () => {
+  const preview = readFileSync('components/DraggablePreview.tsx', 'utf8');
+  const effects = readFileSync('app/effects.css', 'utf8');
+  assert.ok(preview.includes('Learn Sphere conceptual editorial learning poster'));
+  assert.ok(preview.includes('className="learn-book"'));
+  assert.ok(!preview.includes('learn-node'));
+  assert.match(effects, /@media\(prefers-reduced-motion:reduce\)[^\n]*\.learn-book[^\n]*animation:none/);
 });

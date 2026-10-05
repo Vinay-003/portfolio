@@ -213,13 +213,23 @@ function ProjectPoster({ title }: { title: string }) {
 }
 
 function LearnSphereVisual() {
-  return <div className="system-visual system-visual--learn" role="img" aria-label="Learn Sphere conceptual diagram connecting students, educators, administrators, a database and payments">
-    <div className="system-visual__grid" aria-hidden="true" />
-    <div className="learn-core"><span>LEARNING PLATFORM</span><strong>Learn Sphere</strong><small>role-aware learning</small></div>
-    <div className="learn-node learn-node--student">STUDENT</div><div className="learn-node learn-node--educator">EDUCATOR</div><div className="learn-node learn-node--admin">ADMIN</div>
-    <div className="learn-service learn-service--db">DATABASE</div><div className="learn-service learn-service--pay">PAYMENTS</div>
-    <svg className="learn-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M14 24 C 32 20, 34 42, 48 49 M15 72 C 32 76, 35 61, 48 51 M82 20 C 68 26, 67 42, 54 49 M83 70 C 68 68, 67 57, 54 51" /></svg>
-    <div className="system-visual__stamp">CONCEPTUAL SYSTEM DIAGRAM</div>
+  return <div className="system-visual system-visual--learn" role="img" aria-label="Learn Sphere conceptual editorial learning poster, not a website screenshot: every new chapter starts with curiosity, illustrated by an open book">
+    <div className="learn-mast"><span>LEARN SPHERE <i>✳</i></span><span>AN OPEN WORLD OF LEARNING</span></div>
+    <div className="learn-heading">A little curiosity.<br /><em>A world to learn.</em></div>
+    <div className="learn-bottom">
+      <div className="learn-copy"><span>01 / KEEP EXPLORING</span><p>Every new chapter begins with a question. Find your next one here.</p></div>
+      <svg className="learn-book" viewBox="0 0 410 260" fill="none" aria-hidden="true">
+        <ellipse cx="211" cy="238" rx="173" ry="13" fill="#153D32" opacity=".15" />
+        <path d="M34 75C90 48 149 61 205 91C255 55 322 44 377 65L365 211C305 201 247 211 205 236C151 208 94 199 45 216L34 75Z" fill="#D86E5B" stroke="#153D32" strokeWidth="4" strokeLinejoin="round" />
+        <path d="M42 66C101 44 153 57 205 88V222C158 193 102 183 49 201L42 66Z" fill="#F5E7CD" stroke="#153D32" strokeWidth="3" strokeLinejoin="round" />
+        <path d="M205 88C253 53 313 41 370 56L359 198C300 186 250 197 205 222V88Z" fill="#FFFAEB" stroke="#153D32" strokeWidth="3" strokeLinejoin="round" />
+        <path d="M205 88V222M62 88C112 75 154 87 183 105M63 106C104 96 147 106 177 122M225 106C268 82 313 75 351 80M225 124C268 103 309 97 348 102" stroke="#153D32" strokeWidth="2" opacity=".35" strokeLinecap="round" />
+        <path d="M99 138C120 125 142 126 159 139M262 150C283 137 305 136 326 143" stroke="#D86E5B" strokeWidth="4" strokeLinecap="round" />
+        <path d="M207 37V15M196 25L207 15L218 25M205 61L205 48" stroke="#D86E5B" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="80" cy="28" r="5" fill="#D86E5B" /><circle cx="330" cy="26" r="4" fill="#D86E5B" />
+      </svg>
+    </div>
+    <div className="learn-foot"><span>READ · DISCOVER · GROW</span><span>CONCEPTUAL POSTER / 01</span></div>
   </div>;
 }
 
