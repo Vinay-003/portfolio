@@ -279,8 +279,11 @@ export function Portfolio() {
         const cards = gsap.utils.toArray<HTMLElement>(".project-panel");
         const counterItems = gsap.utils.toArray<HTMLElement>(".project-counter__item");
         if (workStage && workScene && cards.length) {
-          gsap.set(cards.slice(1), { yPercent: 18, rotationY: -9, rotation: -2, clipPath: "polygon(0 100%, 100% 135%, 100% 135%, 0 100%)", scale: 0.94, transformPerspective: 1200 });
-          cards.slice(1).forEach((card) => gsap.set(card.querySelectorAll(".project-title__text, .project-panel__kicker, .project-panel__description, .tag-list, .project-actions, .project-preview-wrap"), { y: 55, opacity: 0 }));
+          gsap.set(cards.slice(1), { yPercent: 18, rotationY: (index) => index % 2 ? 9 : -9, rotation: (index) => index % 2 ? 2 : -2, clipPath: "polygon(0 100%, 100% 135%, 100% 135%, 0 100%)", scale: 0.94, transformPerspective: 1200 });
+          cards.slice(1).forEach((card, index) => {
+            gsap.set(card.querySelectorAll(".project-title__text, .project-panel__kicker, .project-panel__description, .tag-list, .project-actions, .project-preview-wrap"), { y: 55, opacity: 0 });
+            gsap.set(card.querySelector(".project-chapter__number"), { yPercent: 35, xPercent: index % 2 ? -12 : 12, opacity: 0 });
+          });
           gsap.set(counterItems, { opacity: 1 });
 
           const workTl = gsap.timeline({
@@ -319,7 +322,7 @@ export function Portfolio() {
                 rotationX: 7,
                 rotationY: -direction * 6,
                 scale: 0.86,
-                opacity: 0.35,
+                autoAlpha: 0,
                 duration: 1.1,
                 ease: "power2.inOut",
               }, transitionStart)
@@ -332,6 +335,8 @@ export function Portfolio() {
                 duration: 1.1,
                 ease: "power2.inOut",
               }, transitionStart)
+              .to(previous.querySelector(".project-chapter__number"), { yPercent: -25, duration: 1.1, ease: "power2.inOut" }, transitionStart)
+              .to(card.querySelector(".project-chapter__number"), { yPercent: 0, xPercent: 0, opacity: 1, duration: 0.9, ease: "power2.out" }, transitionStart + 0.2)
               .to(parts, { y: 0, opacity: 1, duration: 0.38, stagger: 0.04, ease: "power2.out" }, transitionStart + 0.46)
               .to(preview, { y: 0, opacity: 1, duration: 0.63, ease: "power2.out" }, transitionStart + 0.4)
               .addLabel(`project-${index}`, transitionStart + 1.1);

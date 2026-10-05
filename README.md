@@ -4,7 +4,7 @@ A Next.js portfolio combining the original pinned scroll scenes with the updated
 
 ## Motion system
 
-- **GSAP + ScrollTrigger** for pinned scenes, scrubbed timelines, project snapping and horizontal tool movement.
+- **GSAP + ScrollTrigger** for pinned scenes, scrubbed project handoffs and horizontal tool movement.
 - **Lenis** for smooth controlled scrolling integrated with the GSAP ticker.
 - **@gsap/react** for scoped animation setup and cleanup.
 - Desktop keeps the viewport pinned while content changes inside each scene.
@@ -17,7 +17,7 @@ A Next.js portfolio combining the original pinned scroll scenes with the updated
 ## Main scenes
 
 1. A wider hero exits quickly, followed by a slower reveal into the selected-work section.
-2. RoyaltyOS, JobHunter, Learn Sphere and CLIFFY use the original pinned card timeline, with numbered navigation, reading holds and accessible active states.
+2. RoyaltyOS, JobHunter, Learn Sphere and CLIFFY use a pinned cinematic deck: alternating 3D card tilts, diagonal reveals, parallax chapter numbers and staggered title/copy/preview entrances. Scroll stays reversible and can rest mid-transition without snapping; numbered navigation lands on settled reading holds. Tablet/mobile use unpinned scrubbed reveals, and reduced motion presents static, accessible cards.
 3. The Aarogya Kaya internship section uses a hanging production ticket and scroll driven reveals.
    Ad Factory and The Obesity Killer have their own live preview posters below the ticket. The Obesity Killer is Aarogya Kaya LLP's product storefront, not a separate company website.
 4. About stays pinned while the tools track moves horizontally.
@@ -78,6 +78,7 @@ No portfolio setting needs changing when either destination deploys. Switch its 
 
 - Main content and animation timelines: `components/Portfolio.tsx`
 - Visual system and responsive rules: `app/globals.css`
+- Project transition layers and motion fallbacks: `app/project-motion.css`
 - Persistent liquid and preview surfaces: `app/effects.css`
 - Liquid shader and fallbacks: `components/LiquidBackground.tsx`
 - Interactive project artwork: `components/DraggablePreview.tsx`

@@ -1,5 +1,15 @@
 # Portfolio integration QA
 
+## Latest update: cinematic project handoffs, 6 October 2026
+
+- Expanded each desktop handoff into a reversible, scroll-scrubbed 3D card transition with an alternating tilt, diagonal reveal, moving outlined chapter number and staggered title, copy and preview. Removed work-section snapping; numbered buttons still land on fully settled chapters with reading holds.
+- Outgoing cards now become fully transparent and hidden at settled positions, preventing stacked ghost content. Preview motion is applied to the wrapper, preserving the inner card's drag/reset and live iframe behavior.
+- Tablet/mobile use unpinned scrubbed project/title/copy/preview motion. Reduced motion disables it and leaves all project content accessible. No dependencies, project destinations, live-preview settings or other scene timelines changed.
+- `npm test` (5/5), `npm run lint`, `npm run typecheck`, `npm run build` and `git diff --check` passed. `PORTFOLIO_URL=http://localhost:3000 python3 tests/browser-smoke.py` passed all 10 Chromium checks, including three midpoint handoffs, forward/reverse selection, no forced snapping, ghost-card removal, preview dragging, narrow desktop, mobile, reduced-motion load/runtime and WebGL fallback.
+- Updated stale smoke/contract expectations to match the already-existing auto-loaded RoyaltyOS iframe; drag checks use the browser chrome rather than iframe-owned pointer events. Other historical RoyaltyOS screenshot checks in the full follow-up suite are not applicable to its current configuration. The full follow-up suite was not run for this change.
+- Inspected screenshots of settled projects and intermediate transitions in `qa/screens/`. No coverage percentage, cross-browser result or deployment is claimed. Preview locally at `http://localhost:3000`.
+- Three focused follow-up checks passed with the same local URL: `FollowupTests.test_project_links_open_directly_and_learning_poster_fits`, `FollowupTests.test_mobile_posters_layout_and_reduced_motion`, and `FollowupTests.test_learning_poster_respects_reduced_motion`. These cover direct project links/poster fit at 1440/320/390 pixels, production-poster layout at 320/390/768 pixels and reduced-motion artwork.
+
 ## Latest maintenance: dependencies and lint, 6 October 2026
 
 - Upgraded Next.js from `16.2.10` to exact `16.3.8`. The lockfile now resolves PostCSS `8.5.23`, Sharp `0.35.5`, Nanoid `3.3.20` and baseline-browser-mapping `2.11.27`. No forced audit fix or package override was used.
