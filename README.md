@@ -49,6 +49,8 @@ npm run build
 python3 tests/browser-smoke.py
 # Includes the original suite plus 16:10 and mobile follow-up regressions:
 python3 tests/browser-followup.py
+# Optional network-dependent check of the real new-tab destinations:
+PORTFOLIO_CHECK_LIVE=1 python3 tests/browser-followup.py FollowupTests.test_real_external_links_open_as_top_level_pages
 ```
 
 For a different test server, set `PORTFOLIO_URL`. For a different Chrome installation, set `CHROME_PATH`.
@@ -58,7 +60,9 @@ The existing `lint` script uses the removed `next lint` command. A standalone ES
 
 ## Preview behavior
 
-Project artwork is explicitly labeled as a designed poster or conceptual diagram, not a screenshot of the deployed product. Live iframes load only after clicking **Load interactive preview**, with a button to return to the poster. External hosting availability and embedding policies are outside this portfolio's control. Direct live and repository links remain available.
+RoyaltyOS and The Obesity Killer block iframe embedding, so their cards show real, locally stored public website screenshots with **Open live site** links that open a separate tab. These screenshots are static, not interactive or automatically refreshed. If an image fails, a labeled conceptual poster remains available with the same external link.
+
+JobHunter and Ad Factory retain opt-in **Load interactive preview** buttons and return-to-poster controls. Learn Sphere and CLIFFY remain labeled conceptual diagrams. External hosting availability and embedding policies can change; direct live and repository links remain available. Never disable a deployed site's security headers or proxy around its frame restrictions just to make a poster interactive.
 
 ## Editing content
 
@@ -67,4 +71,5 @@ Project artwork is explicitly labeled as a designed poster or conceptual diagram
 - Persistent liquid and preview surfaces: `app/effects.css`
 - Liquid shader and fallbacks: `components/LiquidBackground.tsx`
 - Interactive project artwork: `components/DraggablePreview.tsx`
+- Public website screenshot assets: `public/previews/` (captured without signing in)
 - Metadata: `app/layout.tsx`

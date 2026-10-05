@@ -3,7 +3,18 @@
 import { DraggablePreview } from "./DraggablePreview";
 import "../app/production-posters.css";
 
-const production = [
+type ProductionItem = {
+  title: string;
+  category: string;
+  description: string;
+  live: string;
+  source?: string;
+  theme: "factory" | "store";
+  previewMode?: "embedded" | "external";
+  previewImage?: string;
+};
+
+const production: ProductionItem[] = [
   {
     title: "Ad Factory",
     category: "Creative production pipeline",
@@ -11,6 +22,7 @@ const production = [
     live: "https://ad-factory-pzgh.onrender.com",
     source: "https://github.com/Vinay-003/ad-factory/tree/render-setup",
     theme: "factory",
+    previewMode: "embedded",
   },
   {
     title: "The Obesity Killer",
@@ -18,8 +30,10 @@ const production = [
     description: "The Obesity Killer is Aarogya Kaya LLP’s product storefront. I worked on the Shopify pages, cart and variants, then tackled the layout and popup issues that make a difference when people shop.",
     live: "https://theobesitykiller.com",
     theme: "store",
+    previewMode: "external",
+    previewImage: "/previews/the-obesity-killer.webp",
   },
-] as const;
+];
 
 export function ProductionPosters() {
   return (
@@ -39,12 +53,12 @@ export function ProductionPosters() {
               <p>{item.description}</p>
             </div>
             <div className="production-poster__preview">
-              <DraggablePreview kind="live" title={item.title} liveUrl={item.live} accent={item.theme === "factory" ? "lime" : "cream"} active={true} />
+              <DraggablePreview kind="live" title={item.title} liveUrl={item.live} previewMode={item.previewMode} previewImage={item.previewImage} accent={item.theme === "factory" ? "lime" : "cream"} active={true} />
             </div>
             <div className="production-poster__footer">
               <a href={item.live} target="_blank" rel="noopener noreferrer">Open live <span aria-hidden="true">↗</span></a>
-              {"source" in item && <a href={item.source} target="_blank" rel="noopener noreferrer">Source <span aria-hidden="true">↗</span></a>}
-              <span>Preview loads only on request</span>
+              {item.source && <a href={item.source} target="_blank" rel="noopener noreferrer">Source <span aria-hidden="true">↗</span></a>}
+              <span>{item.previewMode === "external" ? "Site opens in a new tab" : "Preview loads only on request"}</span>
             </div>
           </article>
         ))}

@@ -1,5 +1,6 @@
 """Focused regression checks for 16:10, production posters and mobile motion."""
 import importlib.util
+import os
 import unittest
 
 spec = importlib.util.spec_from_file_location("smoke", "tests/browser-smoke.py")
@@ -8,6 +9,70 @@ spec.loader.exec_module(smoke)
 
 
 class FollowupTests(smoke.PortfolioBrowserTests):
+    def test_blocked_sites_use_local_screenshots_without_iframes(self):
+        for width, height in [(1440, 900), (390, 844)]:
+            page = self.open_page(width, height, is_mobile=width < 900, has_touch=width < 900)
+            external_requests = []
+            page.on('request', lambda request: external_requests.append(request.url)
+                    if any(host in request.url for host in ['royaltyos.vinaybuilds.me', 'theobesitykiller.com']) else None)
+            page.get_by_role('link', name='Work', exact=True).click() if width >= 900 else page.locator('.work-scene').scroll_into_view_if_needed()
+            page.wait_for_timeout(2200)
+            for name, selector, url in [
+                ('RoyaltyOS', '.project-panel', 'https://royaltyos.vinaybuilds.me'),
+                ('The Obesity Killer', '.production-poster', 'https://theobesitykiller.com'),
+            ]:
+                card = page.locator(selector).filter(has=page.get_by_role('heading', name=name, exact=True))
+                if name == 'The Obesity Killer' or width < 900:
+                    card.scroll_into_view_if_needed()
+                page.wait_for_timeout(800)
+                image = card.get_by_alt_text(name + ' website screenshot')
+                self.assertTrue(image.evaluate('img => img.complete && img.naturalWidth === 1440'))
+                self.assertEqual(card.locator('iframe').count(), 0)
+                self.assertEqual(card.get_by_role('button', name='Load interactive preview').count(), 0)
+                link = card.get_by_role('link', name='Open live site', exact=True)
+                self.assertEqual(link.get_attribute('href'), url)
+                self.assertEqual(link.get_attribute('target'), '_blank')
+                self.assertIn('noopener', link.get_attribute('rel'))
+                self.assertTrue(card.get_by_text('Screenshot preview. Opens in a new tab.', exact=True).is_visible())
+                self.capture(page, f'external-{name.lower().replace(" ", "-")}-{width}')
+            self.assertEqual(external_requests, [], 'Posters must not silently request the blocked sites')
+
+    def test_failed_screenshot_retains_truthful_poster_and_external_link(self):
+        page = self.browser.new_page(viewport={'width':390, 'height':844}, is_mobile=True, has_touch=True)
+        self.addCleanup(page.close)
+        page.route('**/previews/*.webp', lambda route: route.fulfill(status=200, content_type='image/webp', body=b'invalid-image'))
+        page.goto(os.environ.get('PORTFOLIO_URL', 'http://127.0.0.1:3000'))
+        for name, selector in [('RoyaltyOS', '.project-panel'), ('The Obesity Killer', '.production-poster')]:
+            card = page.locator(selector).filter(has=page.get_by_role('heading', name=name, exact=True))
+            card.scroll_into_view_if_needed()
+            page.wait_for_timeout(1000)
+            self.assertEqual(card.locator('.browser-preview__screenshot').count(), 0)
+            self.assertTrue(card.locator('.browser-poster').is_visible())
+            self.assertTrue(card.get_by_text('Poster preview. Opens in a new tab.', exact=True).is_visible())
+            self.assertTrue(card.get_by_role('link', name='Open live site', exact=True).is_visible())
+            self.assertEqual(card.locator('iframe').count(), 0)
+
+    @unittest.skipUnless(os.environ.get('PORTFOLIO_CHECK_LIVE') == '1', 'Opt-in real external-site check')
+    def test_real_external_links_open_as_top_level_pages(self):
+        page = self.open_page(390, 844, is_mobile=True, has_touch=True)
+        for name, selector, url, title in [
+            ('RoyaltyOS', '.project-panel', 'https://royaltyos.vinaybuilds.me/', 'RoyaltyOS'),
+            ('The Obesity Killer', '.production-poster', 'https://theobesitykiller.com/', 'The Obesity Killer'),
+        ]:
+            card = page.locator(selector).filter(has=page.get_by_role('heading', name=name, exact=True))
+            card.scroll_into_view_if_needed()
+            page.wait_for_timeout(1000)
+            with page.expect_popup() as opened:
+                card.get_by_role('link', name='Open live site', exact=True).click()
+            popup = opened.value
+            try:
+                popup.wait_for_url(url, wait_until='domcontentloaded', timeout=60000)
+                self.assertEqual(popup.url, url)
+                self.assertIn(title, popup.title())
+                self.assertIsNone(popup.main_frame.parent_frame)
+            finally:
+                popup.close()
+
     def test_hero_copy_returns_after_reverse_navigation(self):
         page = self.open_page(1920, 1113)
         page.get_by_role('link', name='Work', exact=True).click()
@@ -66,7 +131,8 @@ class FollowupTests(smoke.PortfolioBrowserTests):
                 poster.scroll_into_view_if_needed()
                 page.wait_for_timeout(800)
                 preview = poster.locator('.production-poster__preview').bounding_box()
-                button = poster.get_by_role('button', name='Load interactive preview').bounding_box()
+                control = poster.get_by_role('link', name='Open live site', exact=True) if title == 'The Obesity Killer' else poster.get_by_role('button', name='Load interactive preview')
+                button = control.bounding_box()
                 reset = poster.get_by_role('button', name=f'Reset {title} preview position').bounding_box()
                 for rect in [button, reset]:
                     self.assertGreaterEqual(rect['x'], preview['x'])
@@ -108,13 +174,19 @@ class FollowupTests(smoke.PortfolioBrowserTests):
             poster = posters.filter(has=page.get_by_role('heading', name=name, exact=True))
             self.assertEqual(poster.count(), 1)
             self.assertGreater(poster.locator(f'a[href="{url}"]').count(), 0)
-            page.route(url + '/**', lambda route: route.fulfill(content_type="text/html", body="<h1>Test production site</h1>"))
             poster.scroll_into_view_if_needed()
             page.wait_for_timeout(700)
-            poster.get_by_role('button', name='Load interactive preview').click()
-            self.assertEqual(poster.locator('iframe').get_attribute('src'), url)
-            poster.get_by_role('button', name='Back to project poster').click()
-            self.assertEqual(poster.locator('iframe').count(), 0)
+            if name == 'The Obesity Killer':
+                self.assertEqual(poster.get_by_role('button', name='Load interactive preview').count(), 0)
+                self.assertEqual(poster.locator('iframe').count(), 0)
+                self.assertEqual(poster.get_by_role('link', name='Open live site', exact=True).get_attribute('href'), url)
+                self.assertTrue(poster.get_by_alt_text(name + ' website screenshot').evaluate('img => img.complete && img.naturalWidth > 0'))
+            else:
+                page.route(url + '/**', lambda route: route.fulfill(content_type="text/html", body="<h1>Test production site</h1>"))
+                poster.get_by_role('button', name='Load interactive preview').click()
+                self.assertEqual(poster.locator('iframe').get_attribute('src'), url)
+                poster.get_by_role('button', name='Back to project poster').click()
+                self.assertEqual(poster.locator('iframe').count(), 0)
         self.capture(page, "followup-production-posters")
 
 

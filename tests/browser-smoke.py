@@ -120,13 +120,15 @@ class PortfolioBrowserTests(unittest.TestCase):
 
     def test_narrow_desktop_and_live_preview_opt_in(self):
         page = self.open_page(900, 700)
-        page.route("https://royaltyos.vinaybuilds.me/**", lambda route: route.fulfill(content_type="text/html", body="<h1>Test frame</h1>"))
+        page.route("https://jobhunter.vinaybuilds.me/**", lambda route: route.fulfill(content_type="text/html", body="<h1>Test frame</h1>"))
         page.get_by_role("link", name="Work", exact=True).click()
         page.wait_for_timeout(2000)
         self.assertEqual(page.locator("iframe").count(), 0)
         panel = page.locator(".project-panel.is-active").bounding_box()
         actions = page.locator(".project-panel.is-active .project-actions").bounding_box()
         self.assertLessEqual(actions["y"] + actions["height"], panel["y"] + panel["height"])
+        page.get_by_role("button", name="View JobHunter", exact=True).click()
+        page.wait_for_timeout(2100)
         page.locator(".project-panel.is-active").get_by_role("button", name="Load interactive preview").click()
         self.assertEqual(page.locator("iframe").count(), 1)
         page.locator(".project-panel.is-active").get_by_role("button", name="Back to project poster").click()

@@ -8,12 +8,14 @@ type DraggablePreviewProps = {
   kind: PreviewKind;
   title: string;
   liveUrl?: string;
+  previewMode?: "embedded" | "external";
+  previewImage?: string;
   accent?: "lime" | "violet" | "cream";
   active?: boolean;
   preload?: boolean;
 };
 
-export function DraggablePreview({ kind, title, liveUrl, accent = "lime", active = false, preload = false }: DraggablePreviewProps) {
+export function DraggablePreview({ kind, title, liveUrl, previewMode = "embedded", previewImage, accent = "lime", active = false, preload = false }: DraggablePreviewProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const resetRef = useRef<() => void>(() => undefined);
@@ -145,7 +147,7 @@ export function DraggablePreview({ kind, title, liveUrl, accent = "lime", active
   return (
     <div className={`drag-preview drag-preview--${accent}`} ref={rootRef} aria-hidden={!active} inert={!active}>
       <div className="drag-preview__card" ref={cardRef}>
-        {kind === "live" ? <LiveWebsite title={title} url={liveUrl} loadLive={loadLive} onLoad={() => setLoadLive(true)} onClose={() => setLoadLive(false)} active={active} /> : null}
+        {kind === "live" ? <LiveWebsite key={`${previewMode}:${previewImage}`} title={title} url={liveUrl} previewMode={previewMode} previewImage={previewImage} loadLive={loadLive} onLoad={() => setLoadLive(true)} onClose={() => setLoadLive(false)} active={active} /> : null}
         {kind === "learn" ? <LearnSphereVisual /> : null}
         {kind === "cliffy" ? <CliffyVisual /> : null}
         <span className="drag-preview__shine" aria-hidden="true" />
@@ -158,15 +160,30 @@ export function DraggablePreview({ kind, title, liveUrl, accent = "lime", active
   );
 }
 
-function LiveWebsite({ title, url, loadLive, onLoad, onClose, active }: { title: string; url?: string; loadLive: boolean; onLoad: () => void; onClose: () => void; active: boolean }) {
+function LiveWebsite({ title, url, previewMode, previewImage, loadLive, onLoad, onClose, active }: { title: string; url?: string; previewMode: "embedded" | "external"; previewImage?: string; loadLive: boolean; onLoad: () => void; onClose: () => void; active: boolean }) {
+  const [imageFailed, setImageFailed] = useState(false);
+  const imageRef = useRef<HTMLImageElement>(null);
+  useEffect(() => {
+    // A static image may fail before React hydrates and attaches onError.
+    const image = imageRef.current;
+    setImageFailed(!!image && image.complete && image.naturalWidth === 0);
+  }, [previewImage]);
   const safeUrl = url && /^https:\/\//i.test(url) ? url : undefined;
+  const showScreenshot = previewMode === "external" && !!previewImage && !imageFailed;
   return <div className="browser-preview" aria-label={`${title} project preview`}>
-    <div className="browser-preview__chrome"><div className="browser-preview__dots" aria-hidden="true"><i /><i /><i /></div><div className="browser-preview__url">{safeUrl ? new URL(safeUrl).hostname : "Project concept"}</div><span className="browser-preview__label">Project preview</span></div>
+    <div className="browser-preview__chrome"><div className="browser-preview__dots" aria-hidden="true"><i /><i /><i /></div><div className="browser-preview__url">{safeUrl ? new URL(safeUrl).hostname : "Project concept"}</div><span className="browser-preview__label">{showScreenshot ? "Website screenshot" : "Project preview"}</span></div>
     <div className="browser-preview__viewport">
-      <ProjectPoster title={title} />
-      {loadLive && active && safeUrl ? <iframe src={safeUrl} title={`${title} external website (availability not verified)`} loading="lazy" referrerPolicy="no-referrer" sandbox="allow-scripts allow-forms allow-same-origin" /> : null}
-      {safeUrl && !loadLive ? <button className="browser-preview__load" type="button" onClick={onLoad}>Load interactive preview ↗</button> : null}
-      {loadLive && <button className="browser-preview__load" type="button" onClick={onClose}>Back to project poster</button>}
+      {showScreenshot ? <img ref={imageRef} className="browser-preview__screenshot" src={previewImage} alt={`${title} website screenshot`} loading="lazy" draggable={false} width="1440" height="1000" onError={() => setImageFailed(true)} /> : <ProjectPoster title={title} />}
+      {previewMode === "external" ? <>
+        <div className="browser-preview__external-controls">
+          <span className="browser-preview__note">{showScreenshot ? "Screenshot preview." : "Poster preview."} Opens in a new tab.</span>
+          {safeUrl ? <a className="browser-preview__load" href={safeUrl} target="_blank" rel="noopener noreferrer" aria-label="Open live site">Open live site ↗</a> : null}
+        </div>
+      </> : <>
+        {loadLive && active && safeUrl ? <iframe src={safeUrl} title={`${title} external website (availability not verified)`} loading="lazy" referrerPolicy="no-referrer" sandbox="allow-scripts allow-forms allow-same-origin" /> : null}
+        {safeUrl && !loadLive ? <button className="browser-preview__load" type="button" onClick={onLoad}>Load interactive preview ↗</button> : null}
+        {loadLive && <button className="browser-preview__load" type="button" onClick={onClose}>Back to project poster</button>}
+      </>}
     </div>
   </div>;
 }

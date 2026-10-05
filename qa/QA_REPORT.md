@@ -76,3 +76,23 @@ The screenshot follow-up was reproduced before changes. The count intersected th
 Follow-up checks cover headline text bounds and count/bar separation at 1920 by 1200, 1920 by 1113 (browser chrome accounted for), 1680 by 1050, 1440 by 900 and 1280 by 800. Touch-emulated 320 by 568, 390 by 844 and 768 by 1024 layouts were checked for overflow, poster controls and runtime reduced motion. Mobile bar transforms and ticket transforms were verified to change with scrolling; the count stays clear at several mobile scroll positions. Returning from Work restores the hero paragraph.
 
 Screenshots are in `qa/screens/followup-*.png`. The new hero, production showcase and compact poster screenshots were visually inspected. As before, iframe test responses are intercepted fixtures; these tests verify the correct URLs and controls, not external hosting uptime. Physical mobile hardware and other browser engines were not tested.
+
+## Follow-up: refused iframe previews
+
+Actual deployed response headers explain the reported error. RoyaltyOS sends `Content-Security-Policy` with `frame-ancestors 'none'`. The Obesity Killer sends the same directive plus `X-Frame-Options: DENY`. Both returned HTTP 200 as top-level pages; these policies block embedding in the portfolio rather than normal website navigation.
+
+### Repair
+
+- Both blocked cards explicitly use external preview mode. They cannot mount an iframe or display an interactive-preview button, even if previous load state is retained.
+- Real signed-out public website screenshots are stored at `public/previews/royaltyos.webp` and `public/previews/the-obesity-killer.webp`. Source/capture notes are in `public/previews/README.md`. No private session or credentials were used.
+- The screenshot surfaces are clearly labeled static previews and have **Open live site** links opening new tabs with `noopener noreferrer`. Existing live/source actions remain available.
+- Images fit within the frame without cropping. Native image dragging is disabled so the existing pointer-based card dragging still works. Failed images retain truthful conceptual posters and external links, including failures that happen before React hydration.
+- JobHunter and Ad Factory retain opt-in embedded controls. Their controls are still fixture-tested; their full interactive application flows and future framing policies are not guaranteed by these tests.
+
+### Verification
+
+`npm test` passed all **3 source-contract checks**. `npm run typecheck`, `npm run build` and `git diff --check` passed.
+
+`PORTFOLIO_URL=http://127.0.0.1:3001 PORTFOLIO_CHECK_LIVE=1 python3 tests/browser-followup.py` passed **all 17 Chromium browser tests** against the final production build. The new checks verify screenshot loading, no blocked-site requests/iframes before clicking, desktop/mobile external controls, image-failure fallback, and actual new-tab opening of both deployed sites without mocked responses. The real destinations loaded at their correct URLs and had their expected page titles. Their public captures also returned HTTP 200.
+
+Updated screenshot evidence: `qa/screens/external-royaltyos-1440.png`, `qa/screens/external-royaltyos-390.png`, `qa/screens/external-the-obesity-killer-1440.png` and `qa/screens/external-the-obesity-killer-390.png`. Desktop RoyaltyOS and mobile storefront screenshots were visually inspected. This is a point-in-time hosting check, not a guarantee of uptime; physical phones and Safari/Firefox remain untested.

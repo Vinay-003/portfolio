@@ -29,7 +29,11 @@ main.portfolio-root > .scene, main.portfolio-root > .footer { position:relative;
 .browser-preview__label { color:#c5dfb6; font-size:.62rem; letter-spacing:.08em; text-transform:uppercase; }
 .browser-preview__viewport { position:absolute; inset:50px 0 0; overflow:hidden; }
 .browser-preview__viewport iframe { position:absolute; inset:0; z-index:2; border:0; width:100%; height:100%; background:white; }
+.browser-preview__screenshot { display:block; width:100%; height:100%; object-fit:contain; object-position:top; background:#11191c; }
 .browser-preview__load { position:absolute; left:clamp(1.5rem,4vw,3rem); bottom:clamp(1.5rem,4vw,3rem); z-index:4; font-size:.7rem; }
+.browser-preview__external-controls { position:absolute; left:clamp(.75rem,4vw,3rem); right:clamp(.75rem,4vw,3rem); bottom:clamp(.75rem,4vw,3rem); z-index:4; display:flex; flex-wrap:wrap; align-items:center; gap:.5rem 1rem; pointer-events:none; }
+.browser-preview__external-controls .browser-preview__load { position:static; display:inline-block; flex:none; text-decoration:none; pointer-events:auto; }
+.browser-preview__note { order:1; color:#eff1ed; background:rgba(17,25,28,.9); border-radius:5px; padding:.35rem .5rem; font-size:.65rem; line-height:1.4; }
 .browser-poster { position:absolute; inset:0; display:flex; flex-direction:column; justify-content:center; gap:1rem; padding:clamp(1rem,7cqw,3rem); background:radial-gradient(circle at 72% 25%,rgba(192,218,174,.23),transparent 40%),radial-gradient(circle at 20% 90%,rgba(179,184,223,.24),transparent 42%),#11191c; }
 .browser-poster > span { color:#c6e4aa; font-size:.62rem; letter-spacing:.12em; }
 .browser-poster > strong { max-width:100%; font-size:clamp(2rem,12cqw,5.8rem); line-height:.95; letter-spacing:-.06em; overflow-wrap:anywhere; }

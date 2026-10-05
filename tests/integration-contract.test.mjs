@@ -17,3 +17,13 @@ test('liquid and preview components are present with explicit motion fallbacks',
   assert.ok(liquid.includes('startCanvasFallback'));
   assert.ok(existsSync('components/DraggablePreview.tsx'), 'ZIP previews are missing');
 });
+test('frame-blocked sites are explicitly configured as external screenshot previews', () => {
+  const production = readFileSync('components/ProductionPosters.tsx', 'utf8');
+  const royalty = portfolio.slice(portfolio.indexOf('name: "RoyaltyOS"'), portfolio.indexOf('name: "JobHunter"'));
+  const obesity = production.slice(production.indexOf('title: "The Obesity Killer"'), production.indexOf('export function'));
+  for (const [config, path] of [[royalty, 'royaltyos'], [obesity, 'the-obesity-killer']]) {
+    assert.ok(config.includes('previewMode: "external"'));
+    assert.ok(config.includes(`/previews/${path}.webp`));
+    assert.ok(readFileSync(`public/previews/${path}.webp`).length > 1000);
+  }
+});
