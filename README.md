@@ -1,6 +1,6 @@
-# Vinay Saini Portfolio — Next.js Scrollytelling Build
+# Vinay Saini Portfolio
 
-A production-ready Next.js portfolio with pinned, scroll-driven scenes and a responsive mobile fallback.
+A Next.js portfolio combining the original pinned scroll scenes with the updated project content and liquid artwork from the supplied ZIP.
 
 ## Motion system
 
@@ -10,12 +10,15 @@ A production-ready Next.js portfolio with pinned, scroll-driven scenes and a res
 - Desktop keeps the viewport pinned while content changes inside each scene.
 - Tablet and mobile switch to a clean stacked layout with lightweight reveals.
 - `prefers-reduced-motion` disables cinematic motion while preserving content and navigation.
+- A persistent Three.js shader adds luminous liquid behind every section. Canvas2D and CSS provide fallbacks when WebGL is unavailable.
+- Hero typography reveals on arrival, with the original seven bars retained as dimensional, pointer responsive artwork.
+- Previews support bounded mouse dragging and keyboard reset. Touch gestures keep scrolling the document.
 
 ## Main scenes
 
 1. A wider hero exits quickly, followed by a slower reveal into the selected-work section.
-2. Ad Factory, Skillarious and JobHunter_ replace one another using direct masked card reveals, with stable snap points and no blank transition screen.
-3. The Shopify internship section presents verified production-work details and the live URL without a fabricated website screenshot.
+2. RoyaltyOS, JobHunter, Learn Sphere and CLIFFY use the original pinned card timeline, with numbered navigation, reading holds and accessible active states.
+3. The Aarogya Kaya internship section uses a hanging production ticket and scroll driven reveals.
 4. About stays pinned while the tools track moves horizontally.
 5. Contact expands into view as the final scene.
 
@@ -35,10 +38,30 @@ npm run build
 npm start
 ```
 
-The project was successfully tested with `npm run build` on Next.js 16.2.10.
+## Checks
+
+```bash
+npm test
+npm run typecheck
+npm run build
+# With the app running, Python Playwright and Chrome installed:
+python3 tests/browser-smoke.py
+```
+
+For a different test server, set `PORTFOLIO_URL`. For a different Chrome installation, set `CHROME_PATH`.
+Browser screenshots are saved in `qa/screens/` and excluded from git. Results and limitations are recorded in `qa/QA_REPORT.md`.
+
+The existing `lint` script uses the removed `next lint` command. A standalone ESLint configuration is not installed; lint is not included in these checks.
+
+## Preview behavior
+
+Project artwork is explicitly labeled as a designed poster or conceptual diagram, not a screenshot of the deployed product. Live iframes load only after clicking **Load interactive preview**, with a button to return to the poster. External hosting availability and embedding policies are outside this portfolio's control. Direct live and repository links remain available.
 
 ## Editing content
 
 - Main content and animation timelines: `components/Portfolio.tsx`
 - Visual system and responsive rules: `app/globals.css`
+- Persistent liquid and preview surfaces: `app/effects.css`
+- Liquid shader and fallbacks: `components/LiquidBackground.tsx`
+- Interactive project artwork: `components/DraggablePreview.tsx`
 - Metadata: `app/layout.tsx`

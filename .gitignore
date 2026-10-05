@@ -4,3 +4,6 @@ out
 .env*
 .DS_Store
 npm-debug.log*
+*.tsbuildinfo
+qa/screens/
+.opencode/omnirush/

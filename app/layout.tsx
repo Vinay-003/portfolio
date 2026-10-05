@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./effects.css";
 
 export const metadata: Metadata = {
   title: "Vinay Saini — Developer Portfolio",
+  icons: { icon: "/favicon.svg" },
   description:
     "Full-stack products, AI-assisted tools, Shopify systems and automation infrastructure.",
   metadataBase: new URL("https://vinaysaini.dev"),
