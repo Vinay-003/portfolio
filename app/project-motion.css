@@ -1,0 +1,39 @@
+/* Project motion belongs to the deck, not the fixed liquid canvas or draggable cards. */
+@media (min-width:900px) and (prefers-reduced-motion:no-preference) {
+  .project-deck { perspective:1600px; perspective-origin:50% 48%; }
+  .project-panel { transform-origin:50% 55%; backface-visibility:hidden; }
+  .project-panel__copy,.project-preview-wrap { position:relative; z-index:1; }
+  .project-panel h3 { overflow:hidden; padding-bottom:.1em; margin-bottom:-.1em; }
+  .project-title__text { display:block; }
+}
+
+.project-chapter { position:absolute; inset:0; z-index:0; overflow:hidden; border-radius:inherit; pointer-events:none; user-select:none; }
+.project-chapter__number { position:absolute; top:12%; left:28%; color:transparent; -webkit-text-stroke:1px rgba(218,239,214,.13); font-family:"Space Grotesk",sans-serif; font-size:clamp(12rem,35vw,37rem); font-weight:700; line-height:.75; letter-spacing:-.11em; white-space:nowrap; }
+.project-panel--violet .project-chapter__number { -webkit-text-stroke-color:rgba(186,217,225,.13); }
+.project-panel--cream .project-chapter__number { -webkit-text-stroke-color:rgba(229,234,223,.13); }
+.project-chapter__name { position:absolute; right:1.15rem; top:50%; color:rgba(220,235,222,.32); font-size:.58rem; font-weight:800; letter-spacing:.22em; text-transform:uppercase; writing-mode:vertical-rl; transform:translateY(-50%) rotate(180deg); }
+
+/* The cue lives in the stage gutter so it never consumes the deck's 490px minimum. */
+.work-stage { position:relative; }
+.work-scroll-cue { position:absolute; right:max(.4rem,calc((100vw - var(--container))/2 - 1.55rem)); bottom:2.25rem; display:flex; align-items:center; gap:.75rem; color:rgba(216,223,220,.48); font-size:.51rem; font-weight:800; letter-spacing:.18em; writing-mode:vertical-rl; pointer-events:none; }
+.work-scroll-cue i { display:block; width:1px; height:clamp(2.5rem,8svh,5rem); background:linear-gradient(to bottom,rgba(201,255,99,.65),rgba(216,223,220,.1)); }
+
+@media (max-width:1099px), (max-height:699px) { .work-scroll-cue { display:none; } }
+@media (max-width:899px) {
+  .project-deck { perspective:none; }
+  .project-panel { transform:none; }
+  .project-panel__copy,.project-preview-wrap { position:relative; z-index:1; }
+  .project-chapter__number { top:12%; left:32%; font-size:clamp(9rem,33vw,22rem); -webkit-text-stroke-color:rgba(218,239,214,.08); }
+  .project-chapter__name { right:.65rem; opacity:.5; }
+  .project-title__text { display:block; }
+  .work-scroll-cue { display:none; }
+}
+@media (max-width:620px) {
+  .project-chapter__number { top:3.5rem; left:36%; font-size:clamp(7rem,42vw,14rem); }
+  .project-chapter__name { top:5rem; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .project-chapter,.work-scroll-cue { display:none!important; }
+  .project-panel__copy,.project-panel__copy > *,.project-panel__copy h3,.project-title__text,.project-preview-wrap { transform:none!important; opacity:1!important; visibility:visible!important; clip-path:none!important; filter:none!important; }
+  .project-panel__copy h3 { overflow:visible!important; }
+}

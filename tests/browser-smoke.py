@@ -79,7 +79,7 @@ class PortfolioBrowserTests(unittest.TestCase):
     def test_project_motion_mobile_and_reduced_fallbacks(self):
         mobile = self.open_page(390, 844, is_mobile=True, has_touch=True)
         panel = mobile.locator(".project-panel").nth(1)
-        title = panel.locator("h3")
+        title = panel.locator("h3 span")
         before = title.evaluate("el => getComputedStyle(el).transform")
         panel.scroll_into_view_if_needed()
         mobile.wait_for_timeout(1300)

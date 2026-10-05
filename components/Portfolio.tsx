@@ -279,23 +279,17 @@ export function Portfolio() {
         const cards = gsap.utils.toArray<HTMLElement>(".project-panel");
         const counterItems = gsap.utils.toArray<HTMLElement>(".project-counter__item");
         if (workStage && workScene && cards.length) {
-          gsap.set(cards.slice(1), { yPercent: 8, clipPath: "inset(100% 0 0 0 round 24px)", scale: 0.985 });
+          gsap.set(cards.slice(1), { yPercent: 18, rotationY: -9, rotation: -2, clipPath: "polygon(0 100%, 100% 135%, 100% 135%, 0 100%)", scale: 0.94, transformPerspective: 1200 });
+          cards.slice(1).forEach((card) => gsap.set(card.querySelectorAll(".project-title__text, .project-panel__kicker, .project-panel__description, .tag-list, .project-actions, .project-preview-wrap"), { y: 55, opacity: 0 }));
           gsap.set(counterItems, { opacity: 1 });
 
           const workTl = gsap.timeline({
             scrollTrigger: {
               trigger: workScene,
               start: "top top",
-              end: () => `+=${window.innerHeight * 6.4}`,
+              end: () => `+=${window.innerHeight * 7.5}`,
               pin: workStage,
               scrub: 0.45,
-              snap: {
-                snapTo: "labelsDirectional",
-                delay: 0.05,
-                duration: { min: 0.12, max: 0.28 },
-                ease: "power2.inOut",
-                inertia: false,
-              },
               anticipatePin: 1,
               invalidateOnRefresh: true,
             },
@@ -307,33 +301,43 @@ export function Portfolio() {
             const time = workTl.time();
             let active = 0;
             for (let index = 1; index < cards.length; index++) {
-              if (time >= workTl.labels[`project-${index}`] - 0.18) active = index;
+              // Switch interaction at the visual handoff, including when scrubbing backward.
+              if (time >= (index - 1) * 2.2 + 1.1 + 0.72) active = index;
             }
             setActiveProject((previous) => previous === active ? previous : active);
           });
           cards.forEach((card, index) => {
             if (index === 0) return;
             const previous = cards[index - 1];
-            const transitionStart = 1.18 + (index - 1) * 1.55;
+            const transitionStart = 1.1 + (index - 1) * 2.2;
+            const direction = index % 2 ? 1 : -1;
+            const parts = card.querySelectorAll<HTMLElement>(".project-title__text, .project-panel__kicker, .project-panel__description, .tag-list, .project-actions");
+            const preview = card.querySelector<HTMLElement>(".project-preview-wrap");
             workTl
               .to(previous, {
-                yPercent: -7,
-                scale: 0.94,
-                autoAlpha: 0,
-                filter: "blur(5px)",
-                duration: 0.26,
-                ease: "power3.in",
+                yPercent: -13,
+                rotationX: 7,
+                rotationY: -direction * 6,
+                scale: 0.86,
+                opacity: 0.35,
+                duration: 1.1,
+                ease: "power2.inOut",
               }, transitionStart)
               .to(card, {
                 yPercent: 0,
-                clipPath: "inset(0% 0 0 0 round 24px)",
+                rotationY: 0,
+                rotation: 0,
+                clipPath: "polygon(0 0%, 100% 0%, 100% 100%, 0 100%)",
                 scale: 1,
-                duration: 0.34,
-                ease: "power3.out",
-              }, transitionStart + 0.03)
-              .addLabel(`project-${index}`, transitionStart + 0.38);
+                duration: 1.1,
+                ease: "power2.inOut",
+              }, transitionStart)
+              .to(parts, { y: 0, opacity: 1, duration: 0.38, stagger: 0.04, ease: "power2.out" }, transitionStart + 0.46)
+              .to(preview, { y: 0, opacity: 1, duration: 0.63, ease: "power2.out" }, transitionStart + 0.4)
+              .addLabel(`project-${index}`, transitionStart + 1.1);
           });
-          workTl.to(cards[cards.length - 1], { scale: 1, duration: 1.1 });
+          // A real final hold keeps the last label at fully settled, readable content.
+          workTl.to({}, { duration: 0.9 }, 6.6);
         }
 
         const experienceStage = root.querySelector<HTMLElement>(".experience-stage");
@@ -389,9 +393,19 @@ export function Portfolio() {
             scrollTrigger: { trigger: ".contact-scene", start: "top 78%", end: "top 25%", scrub: 1 },
           },
         );
+        return () => { workTimelineRef.current = null; };
       });
 
-       mm.add("(max-width: 899px) and (prefers-reduced-motion: no-preference)", () => {
+        mm.add("(max-width: 899px) and (prefers-reduced-motion: no-preference)", () => {
+          gsap.utils.toArray<HTMLElement>(".project-panel").forEach((card) => {
+            gsap.fromTo(card, { y: 35, opacity: 0.8 }, { y: 0, opacity: 1, ease: "none", scrollTrigger: { trigger: card, start: "top 95%", end: "top 35%", scrub: 0.45 } });
+            const title = card.querySelector<HTMLElement>(".project-title__text");
+            const copy = card.querySelectorAll<HTMLElement>(".project-panel__kicker, .project-panel__description, .tag-list, .project-actions");
+            const preview = card.querySelector<HTMLElement>(".project-preview-wrap");
+            if (title) gsap.fromTo(title, { y: 48 }, { y: -12, ease: "none", scrollTrigger: { trigger: card, start: "top 95%", end: "bottom 20%", scrub: 0.5 } });
+            gsap.fromTo(copy, { y: 24, opacity: 0.7 }, { y: -8, opacity: 1, stagger: 0.05, ease: "none", scrollTrigger: { trigger: card, start: "top 92%", end: "bottom 25%", scrub: 0.5 } });
+            if (preview) gsap.fromTo(preview, { y: 55 }, { y: -18, ease: "none", scrollTrigger: { trigger: card, start: "top 90%", end: "bottom 15%", scrub: 0.5 } });
+          });
          gsap.to(".hero-art-bar", {
            y: (index) => index % 2 ? -24 : 32,
            x: (index) => (index - 3) * 3,
@@ -530,10 +544,11 @@ export function Portfolio() {
           </div>
           <div className="project-deck">
             {projects.map((project, index) => (
-              <article className={`project-panel project-panel--${project.accent} ${index === activeProject ? "is-active" : ""}`} data-mobile-reveal key={project.name} style={{ zIndex: index + 1 }} aria-hidden={!stackedProjects && index !== activeProject} inert={!stackedProjects && index !== activeProject}>
+              <article className={`project-panel project-panel--${project.accent} ${index === activeProject ? "is-active" : ""}`} key={project.name} style={{ zIndex: index + 1 }} aria-hidden={!stackedProjects && index !== activeProject} inert={!stackedProjects && index !== activeProject}>
+                <div className="project-chapter" aria-hidden="true"><span className="project-chapter__number">{project.number}</span><span className="project-chapter__name">{project.name}</span></div>
                 <div className="project-panel__copy">
                   <div className="project-panel__top"><span>{project.number} / 04</span><span>{project.label}</span></div>
-                  <h3>{project.name}</h3>
+                  <h3><span className="project-title__text">{project.name}</span></h3>
                   <p className="project-panel__kicker">{project.kicker}</p>
                   <p className="project-panel__description">{project.description}</p>
                   <ul className="tag-list">{project.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul>
@@ -546,6 +561,7 @@ export function Portfolio() {
               </article>
             ))}
           </div>
+          <div className="work-scroll-cue" aria-hidden="true">SCROLL TO SHIFT <i /></div>
         </div>
       </section>
 

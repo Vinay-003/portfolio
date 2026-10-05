@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./effects.css";
+import "./project-motion.css";
 
 export const metadata: Metadata = {
   title: "Vinay Saini — Developer Portfolio",
