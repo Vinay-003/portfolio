@@ -29,12 +29,17 @@ test('preview modes preserve RoyaltyOS live loading and the external production 
     assert.ok(config.includes(`/previews/${path}.webp`));
     assert.ok(readFileSync(`public/previews/${path}.webp`).length > 1000);
   }
+  const cliffy = portfolio.slice(portfolio.indexOf('name: "CLIFFY"'), portfolio.indexOf('const tools'));
+  assert.ok(cliffy.includes('live: "https://cliffy.vinaybuilds.me"'));
+  assert.ok(cliffy.includes('preview: "live"'));
+  assert.ok(cliffy.includes('previewMode: "embedded"'));
+  assert.ok(cliffy.includes('autoLoadLive: true'));
 });
 
 test('project destinations open directly with no deployment gating', () => {
   for (const [name, next, host, kind] of [
     ['Learn Sphere', 'name: "CLIFFY"', 'learnsphere.vinaybuilds.me', 'learn'],
-    ['CLIFFY', 'const tools', 'cliffy.vinaybuilds.me', 'cliffy'],
+    ['CLIFFY', 'const tools', 'cliffy.vinaybuilds.me', 'live'],
   ]) {
     const config = portfolio.slice(portfolio.indexOf(`name: "${name}"`), portfolio.indexOf(next));
     assert.ok(config.includes(`live: "https://${host}"`));

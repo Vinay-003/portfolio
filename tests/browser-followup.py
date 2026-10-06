@@ -197,7 +197,7 @@ class FollowupTests(smoke.PortfolioBrowserTests):
                     if any(host in request.url for host in ['learnsphere.vinaybuilds.me', 'cliffy.vinaybuilds.me']) else None)
             for name, host, artwork, repo, response in [
                 ('Learn Sphere', 'learnsphere.vinaybuilds.me', '.system-visual--learn', 'https://github.com/Vinay-003/skillarious', 200),
-                ('CLIFFY', 'cliffy.vinaybuilds.me', '.system-visual--terminal', 'https://github.com/Vinay-003/aishell2', 503),
+                ('CLIFFY', 'cliffy.vinaybuilds.me', None, 'https://github.com/Vinay-003/aishell2', 200),
             ]:
                 card = page.locator('.project-panel').filter(has=page.get_by_role('heading', name=name, exact=True))
                 if width >= 900:
@@ -213,8 +213,13 @@ class FollowupTests(smoke.PortfolioBrowserTests):
                 self.assertEqual(link.get_attribute('target'), '_blank')
                 self.assertIn('noreferrer', link.get_attribute('rel'))
                 self.assertEqual(card.get_by_role('button', name='Load interactive preview').count(), 0)
-                self.assertEqual(card.locator('iframe').count(), 0)
-                self.assertTrue(card.locator(artwork).is_visible())
+                if name == 'CLIFFY':
+                    self.assertEqual(card.locator('iframe').count(), 1)
+                    self.assertEqual(card.locator('iframe').get_attribute('src'), 'https://cliffy.vinaybuilds.me')
+                    self.assertEqual(card.locator('.system-visual--terminal').count(), 1)
+                else:
+                    self.assertEqual(card.locator('iframe').count(), 0)
+                    self.assertTrue(card.locator(artwork).is_visible())
                 self.assertEqual(card.get_by_role('link', name='Source').get_attribute('href'), repo)
                 self.assertEqual(page.get_by_role('heading', name='Skillarious', exact=True).count(), 0)
                 actions = card.locator('.project-actions').bounding_box()
@@ -232,8 +237,12 @@ class FollowupTests(smoke.PortfolioBrowserTests):
                         });
                     }''')
                     self.assertTrue(fits, 'Learning poster text must fit inside its card')
+                    self.assertFalse(any(f'https://{host}' in request for request in requests),
+                                     'Learn Sphere must not request a live preview')
+                else:
+                    self.assertTrue(any(f'https://{host}' in request for request in requests),
+                                    'CLIFFY must request the live preview when its card is selected')
                 self.capture(page, f'direct-{name.lower().replace(" ", "-")}-{width}')
-                self.assertEqual(requests, [], 'Domains must only be requested on a deliberate click')
                 # Fixtures prove navigation for success and failure, not remote availability.
                 page.context.route(f'https://{host}/**', lambda route, request, status=response: route.fulfill(
                     status=status, content_type='text/html', body=f'<h1>Destination response {status}</h1>'))

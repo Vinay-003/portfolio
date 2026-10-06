@@ -191,6 +191,7 @@ function LiveWebsite({ title, url, previewMode, previewImage, loadLive, onLoad, 
 
 function ProjectPoster({ title }: { title: string }) {
   const royalty = title.toLowerCase().includes("royalty");
+  if (title === "CLIFFY") return <CliffyVisual />;
   if (title === "Ad Factory") return <div className="browser-poster production-art production-art--factory" role="img" aria-label="Conceptual Ad Factory creative workflow diagram, not a website screenshot">
     <div className="production-art__mast"><span>CREATIVE PIPELINE / CONCEPTUAL POSTER</span><span>AF / 01</span></div>
     <strong>Ideas in.<br /><em>Formats out.</em></strong>

@@ -66,7 +66,7 @@ The existing `lint` script uses the removed `next lint` command. A standalone ES
 
 ## Preview behavior
 
-RoyaltyOS and The Obesity Killer block iframe embedding, so their cards show real, locally stored public website screenshots with **Open live site** links that open a separate tab. These screenshots are static, not interactive or automatically refreshed. If an image fails, a labeled conceptual poster remains available with the same external link.
+RoyaltyOS and CLIFFY load their live sites in the active project card. The Obesity Killer blocks iframe embedding, so its card uses a real, locally stored public website screenshot with an **Open live site** link that opens a separate tab. The screenshot is static, not interactive or automatically refreshed. If an image fails, a labeled conceptual poster remains available with the same external link.
 
 JobHunter and Ad Factory retain opt-in **Load interactive preview** buttons and return-to-poster controls. Learn Sphere has an editorial learning poster with a dimensional book illustration; CLIFFY retains its conceptual terminal preview. External hosting availability and embedding policies can change; direct live and repository links remain available. Never disable a deployed site's security headers or proxy around its frame restrictions just to make a poster interactive.
 

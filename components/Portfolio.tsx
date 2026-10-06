@@ -79,7 +79,9 @@ const projects: Project[] = [
     tags: ["Python", "OpenAI API", "CLI", "Async", "Safety", "Automation"],
     live: "https://cliffy.vinaybuilds.me",
     repo: "https://github.com/Vinay-003/aishell2",
-    preview: "cliffy",
+    preview: "live",
+    previewMode: "embedded",
+    autoLoadLive: true,
     accent: "lime",
   },
 ];
