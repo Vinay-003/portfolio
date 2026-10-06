@@ -34,11 +34,16 @@ test('preview modes preserve RoyaltyOS live loading and the external production 
   assert.ok(cliffy.includes('preview: "live"'));
   assert.ok(cliffy.includes('previewMode: "embedded"'));
   assert.ok(cliffy.includes('autoLoadLive: true'));
+  const skillarious = portfolio.slice(portfolio.indexOf('name: "Skillarious"'), portfolio.indexOf('name: "CLIFFY"'));
+  assert.ok(skillarious.includes('live: "https://skillarious.vinaybuilds.me"'));
+  assert.ok(skillarious.includes('preview: "live"'));
+  assert.ok(skillarious.includes('previewMode: "embedded"'));
+  assert.ok(!skillarious.includes('autoLoadLive: true'));
 });
 
 test('project destinations open directly with no deployment gating', () => {
   for (const [name, next, host, kind] of [
-    ['Skillarious', 'name: "CLIFFY"', 'skillarious.vinaybuilds.me', 'learn'],
+    ['Skillarious', 'name: "CLIFFY"', 'skillarious.vinaybuilds.me', 'live'],
     ['CLIFFY', 'const tools', 'cliffy.vinaybuilds.me', 'live'],
   ]) {
     const config = portfolio.slice(portfolio.indexOf(`name: "${name}"`), portfolio.indexOf(next));

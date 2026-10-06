@@ -68,11 +68,11 @@ The existing `lint` script uses the removed `next lint` command. A standalone ES
 
 RoyaltyOS and CLIFFY load their live sites in the active project card. The Obesity Killer blocks iframe embedding, so its card uses a real, locally stored public website screenshot with an **Open live site** link that opens a separate tab. The screenshot is static, not interactive or automatically refreshed. If an image fails, a labeled conceptual poster remains available with the same external link.
 
-JobHunter and Ad Factory retain opt-in **Load interactive preview** buttons and return-to-poster controls. Skillarious has an editorial learning poster with a dimensional book illustration; CLIFFY retains its conceptual terminal preview. External hosting availability and embedding policies can change; direct live and repository links remain available. Never disable a deployed site's security headers or proxy around its frame restrictions just to make a poster interactive.
+JobHunter, Skillarious and Ad Factory retain opt-in **Load interactive preview** buttons and return-to-poster controls. Skillarious starts on its editorial learning poster with a dimensional book illustration; CLIFFY retains its auto-loaded live preview and conceptual terminal fallback. External hosting availability and embedding policies can change; direct live and repository links remain available. Never disable a deployed site's security headers or proxy around its frame restrictions just to make a poster interactive.
 
 Ad Factory uses `https://adfactory.vinaybuilds.me` for both its production preview and experience link. Skillarious and CLIFFY have direct **Open live** links to `https://skillarious.vinaybuilds.me` and `https://cliffy.vinaybuilds.me`. There are no coming-soon labels or deployment checks: the destination loads or returns its own error. Posters do not automatically request these domains. GitHub links are preserved.
 
-No portfolio setting needs changing when either destination deploys. Switch its `preview` to `"live"` only if you separately want an opt-in website preview and have verified the destination permits embedding.
+No portfolio setting needs changing when either destination deploys. Skillarious's live preview is opt-in so the card remains lightweight until the visitor requests it.
 
 ## Editing content
 

@@ -192,6 +192,8 @@ class FollowupTests(smoke.PortfolioBrowserTests):
     def test_project_links_open_directly_and_learning_poster_fits(self):
         for width, height in [(1440, 900), (320, 568), (390, 844)]:
             page = self.open_page(width, height, is_mobile=width < 900, has_touch=width < 900)
+            page.route('https://skillarious.vinaybuilds.me/**', lambda route: route.fulfill(
+                status=200, content_type='text/html', body='<h1>Skillarious preview fixture</h1>'))
             requests = []
             page.on('request', lambda request: requests.append(request.url)
                     if any(host in request.url for host in ['skillarious.vinaybuilds.me', 'cliffy.vinaybuilds.me']) else None)
@@ -212,14 +214,23 @@ class FollowupTests(smoke.PortfolioBrowserTests):
                 self.assertEqual(link.get_attribute('href'), f'https://{host}')
                 self.assertEqual(link.get_attribute('target'), '_blank')
                 self.assertIn('noreferrer', link.get_attribute('rel'))
-                self.assertEqual(card.get_by_role('button', name='Load interactive preview').count(), 0)
-                if name == 'CLIFFY':
+                if name == 'Skillarious':
+                    self.assertEqual(card.get_by_role('button', name='Load interactive preview').count(), 1)
+                    self.assertEqual(card.locator('iframe').count(), 0)
+                    self.assertTrue(card.locator(artwork).is_visible())
+                    self.assertFalse(any(f'https://{host}' in request for request in requests),
+                                     'Skillarious must not request a live preview before the user opts in')
+                    card.get_by_role('button', name='Load interactive preview').click()
+                    page.wait_for_timeout(800)
+                    self.assertEqual(card.locator('iframe').count(), 1)
+                    self.assertEqual(card.locator('iframe').get_attribute('src'), 'https://skillarious.vinaybuilds.me')
+                    card.get_by_role('button', name='Back to project poster').click()
+                    self.assertEqual(card.locator('iframe').count(), 0)
+                else:
+                    self.assertEqual(card.get_by_role('button', name='Load interactive preview').count(), 0)
                     self.assertEqual(card.locator('iframe').count(), 1)
                     self.assertEqual(card.locator('iframe').get_attribute('src'), 'https://cliffy.vinaybuilds.me')
                     self.assertEqual(card.locator('.system-visual--terminal').count(), 1)
-                else:
-                    self.assertEqual(card.locator('iframe').count(), 0)
-                    self.assertTrue(card.locator(artwork).is_visible())
                 self.assertEqual(card.get_by_role('link', name='Source').get_attribute('href'), repo)
                 self.assertEqual(page.get_by_role('heading', name='Learn Sphere', exact=True).count(), 0)
                 actions = card.locator('.project-actions').bounding_box()
@@ -237,8 +248,8 @@ class FollowupTests(smoke.PortfolioBrowserTests):
                         });
                     }''')
                     self.assertTrue(fits, 'Learning poster text must fit inside its card')
-                    self.assertFalse(any(f'https://{host}' in request for request in requests),
-                                     'Skillarious must not request a live preview')
+                    self.assertTrue(any(f'https://{host}' in request for request in requests),
+                                    'Skillarious must request the live preview after the user opts in')
                 else:
                     self.assertTrue(any(f'https://{host}' in request for request in requests),
                                     'CLIFFY must request the live preview when its card is selected')

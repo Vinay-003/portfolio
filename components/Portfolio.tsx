@@ -66,7 +66,8 @@ const projects: Project[] = [
     tags: ["Next.js", "Express", "TypeScript", "PostgreSQL", "Drizzle", "Razorpay"],
     live: "https://skillarious.vinaybuilds.me",
     repo: "https://github.com/Vinay-003/skillarious",
-    preview: "learn",
+    preview: "live",
+    previewMode: "embedded",
     accent: "cream",
   },
   {
