@@ -58,13 +58,13 @@ const projects: Project[] = [
   },
   {
     number: "03",
-    name: "Learn Sphere",
+    name: "Skillarious",
     label: "Course marketplace with real product flows",
     kicker: "Three roles, real payments, persistence and moderation. This is not a static course UI.",
     description:
       "A course marketplace in development beyond the landing page. I'm building flows for teachers to publish, students to enroll and ask questions, and admins to keep things in order, alongside login, database and Razorpay payments.",
     tags: ["Next.js", "Express", "TypeScript", "PostgreSQL", "Drizzle", "Razorpay"],
-    live: "https://learnsphere.vinaybuilds.me",
+    live: "https://skillarious.vinaybuilds.me",
     repo: "https://github.com/Vinay-003/skillarious",
     preview: "learn",
     accent: "cream",

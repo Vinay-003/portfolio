@@ -4,7 +4,7 @@ import { readFileSync, existsSync } from 'node:fs';
 
 const portfolio = readFileSync('components/Portfolio.tsx', 'utf8');
 test('ZIP content is integrated without replacing the original pinned scenes', () => {
-  for (const name of ['RoyaltyOS', 'JobHunter', 'Learn Sphere', 'CLIFFY']) assert.ok(portfolio.includes(name), `${name} is missing`);
+  for (const name of ['RoyaltyOS', 'JobHunter', 'Skillarious', 'CLIFFY']) assert.ok(portfolio.includes(name), `${name} is missing`);
   for (const stage of ['pin: heroStage', 'pin: workStage', 'pin: experienceStage', 'pin: aboutStage']) assert.ok(portfolio.includes(stage), `${stage} is missing`);
   assert.ok(portfolio.includes('hero-art-bar'));
   assert.ok(portfolio.includes('LiquidBackground'));
@@ -38,7 +38,7 @@ test('preview modes preserve RoyaltyOS live loading and the external production 
 
 test('project destinations open directly with no deployment gating', () => {
   for (const [name, next, host, kind] of [
-    ['Learn Sphere', 'name: "CLIFFY"', 'learnsphere.vinaybuilds.me', 'learn'],
+    ['Skillarious', 'name: "CLIFFY"', 'skillarious.vinaybuilds.me', 'learn'],
     ['CLIFFY', 'const tools', 'cliffy.vinaybuilds.me', 'live'],
   ]) {
     const config = portfolio.slice(portfolio.indexOf(`name: "${name}"`), portfolio.indexOf(next));
@@ -56,10 +56,10 @@ test('project destinations open directly with no deployment gating', () => {
   }
 });
 
-test('Learn Sphere uses an editorial poster with a reduced-motion fallback', () => {
+test('Skillarious uses an editorial poster with a reduced-motion fallback', () => {
   const preview = readFileSync('components/DraggablePreview.tsx', 'utf8');
   const effects = readFileSync('app/effects.css', 'utf8');
-  assert.ok(preview.includes('Learn Sphere conceptual editorial learning poster'));
+  assert.ok(preview.includes('Skillarious conceptual editorial learning poster'));
   assert.ok(preview.includes('className="learn-book"'));
   assert.ok(!preview.includes('learn-node'));
   assert.match(effects, /@media\(prefers-reduced-motion:reduce\)[^\n]*\.learn-book[^\n]*animation:none/);

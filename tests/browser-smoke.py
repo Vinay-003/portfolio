@@ -48,7 +48,7 @@ class PortfolioBrowserTests(unittest.TestCase):
         page = self.open_page()
         self.assertEqual(page.locator(".project-chapter").count(), 4)
         destinations = []
-        for name in ["RoyaltyOS", "JobHunter", "Learn Sphere", "CLIFFY"]:
+        for name in ["RoyaltyOS", "JobHunter", "Skillarious", "CLIFFY"]:
             page.get_by_role("button", name=f"View {name}", exact=True).click()
             page.wait_for_timeout(1900)
             destinations.append(page.evaluate("scrollY"))
@@ -99,7 +99,7 @@ class PortfolioBrowserTests(unittest.TestCase):
     def test_chapter_numbers_are_complete_and_clear_of_previews(self):
         for width, height in [(1440, 900), (900, 700), (768, 1024), (390, 844)]:
             page = self.open_page(width, height)
-            for index, name in enumerate(["RoyaltyOS", "JobHunter", "Learn Sphere", "CLIFFY"]):
+            for index, name in enumerate(["RoyaltyOS", "JobHunter", "Skillarious", "CLIFFY"]):
                 if width >= 900:
                     page.get_by_role("button", name=f"View {name}", exact=True).click()
                 else:
@@ -150,7 +150,7 @@ class PortfolioBrowserTests(unittest.TestCase):
 
     def test_project_selection_reverse_and_drag(self):
         page = self.open_page()
-        for name in ["RoyaltyOS", "JobHunter", "Learn Sphere", "CLIFFY", "Learn Sphere", "RoyaltyOS"]:
+        for name in ["RoyaltyOS", "JobHunter", "Skillarious", "CLIFFY", "Skillarious", "RoyaltyOS"]:
             page.get_by_role("button", name=f"View {name}", exact=True).click()
             page.wait_for_timeout(1900)
             self.assertEqual(page.locator(".project-panel.is-active h3").inner_text(), name)

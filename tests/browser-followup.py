@@ -194,9 +194,9 @@ class FollowupTests(smoke.PortfolioBrowserTests):
             page = self.open_page(width, height, is_mobile=width < 900, has_touch=width < 900)
             requests = []
             page.on('request', lambda request: requests.append(request.url)
-                    if any(host in request.url for host in ['learnsphere.vinaybuilds.me', 'cliffy.vinaybuilds.me']) else None)
+                    if any(host in request.url for host in ['skillarious.vinaybuilds.me', 'cliffy.vinaybuilds.me']) else None)
             for name, host, artwork, repo, response in [
-                ('Learn Sphere', 'learnsphere.vinaybuilds.me', '.system-visual--learn', 'https://github.com/Vinay-003/skillarious', 200),
+                ('Skillarious', 'skillarious.vinaybuilds.me', '.system-visual--learn', 'https://github.com/Vinay-003/skillarious', 200),
                 ('CLIFFY', 'cliffy.vinaybuilds.me', None, 'https://github.com/Vinay-003/aishell2', 200),
             ]:
                 card = page.locator('.project-panel').filter(has=page.get_by_role('heading', name=name, exact=True))
@@ -221,11 +221,11 @@ class FollowupTests(smoke.PortfolioBrowserTests):
                     self.assertEqual(card.locator('iframe').count(), 0)
                     self.assertTrue(card.locator(artwork).is_visible())
                 self.assertEqual(card.get_by_role('link', name='Source').get_attribute('href'), repo)
-                self.assertEqual(page.get_by_role('heading', name='Skillarious', exact=True).count(), 0)
+                self.assertEqual(page.get_by_role('heading', name='Learn Sphere', exact=True).count(), 0)
                 actions = card.locator('.project-actions').bounding_box()
                 panel = card.bounding_box()
                 self.assertLessEqual(actions['y'] + actions['height'], panel['y'] + panel['height'] + 1)
-                if name == 'Learn Sphere':
+                if name == 'Skillarious':
                     self.assertIn('conceptual', card.locator(artwork).get_attribute('aria-label'))
                     self.assertEqual(card.locator('.learn-book').count(), 1)
                     self.assertTrue(card.locator(artwork).evaluate('el => el.scrollWidth <= el.clientWidth && el.scrollHeight <= el.clientHeight'))
@@ -238,7 +238,7 @@ class FollowupTests(smoke.PortfolioBrowserTests):
                     }''')
                     self.assertTrue(fits, 'Learning poster text must fit inside its card')
                     self.assertFalse(any(f'https://{host}' in request for request in requests),
-                                     'Learn Sphere must not request a live preview')
+                                     'Skillarious must not request a live preview')
                 else:
                     self.assertTrue(any(f'https://{host}' in request for request in requests),
                                     'CLIFFY must request the live preview when its card is selected')

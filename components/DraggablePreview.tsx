@@ -149,7 +149,7 @@ export function DraggablePreview({ kind, title, liveUrl, previewMode = "embedded
     <div className={`drag-preview drag-preview--${accent}`} ref={rootRef} aria-hidden={!active} inert={!active}>
       <div className="drag-preview__card" ref={cardRef}>
         {kind === "live" ? <LiveWebsite key={`${previewMode}:${previewImage}`} title={title} url={liveUrl} previewMode={previewMode} previewImage={previewImage} loadLive={loadLive} onLoad={() => setLoadLive(true)} onClose={() => setLoadLive(false)} active={active} /> : null}
-        {kind === "learn" ? <LearnSphereVisual /> : null}
+        {kind === "learn" ? <SkillariousVisual /> : null}
         {kind === "cliffy" ? <CliffyVisual /> : null}
         <span className="drag-preview__shine" aria-hidden="true" />
       </div>
@@ -214,9 +214,9 @@ function ProjectPoster({ title }: { title: string }) {
   </div>;
 }
 
-function LearnSphereVisual() {
-  return <div className="system-visual system-visual--learn" role="img" aria-label="Learn Sphere conceptual editorial learning poster, not a website screenshot: every new chapter starts with curiosity, illustrated by an open book">
-    <div className="learn-mast"><span>LEARN SPHERE <i>✳</i></span><span>AN OPEN WORLD OF LEARNING</span></div>
+function SkillariousVisual() {
+  return <div className="system-visual system-visual--learn" role="img" aria-label="Skillarious conceptual editorial learning poster, not a website screenshot: every new chapter starts with curiosity, illustrated by an open book">
+    <div className="learn-mast"><span>SKILLARIOUS <i>✳</i></span><span>AN OPEN WORLD OF LEARNING</span></div>
     <div className="learn-heading">A little curiosity.<br /><em>A world to learn.</em></div>
     <div className="learn-bottom">
       <div className="learn-copy"><span>01 / KEEP EXPLORING</span><p>Every new chapter begins with a question. Find your next one here.</p></div>
